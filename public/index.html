@@ -366,6 +366,71 @@ header{
 /* ── TOAST ── */
 .toast{position:fixed;bottom:24px;right:24px;z-index:500;padding:11px 20px;border-radius:9px;font-size:12px;font-weight:600;pointer-events:none;color:#fff;animation:slideDown .3s ease;}
 
+/* ══════════════════════════════
+   FORO
+══════════════════════════════ */
+.foro-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:12px;}
+.foro-temas-list{display:flex;flex-direction:column;gap:10px;}
+.foro-tema-card{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:16px 20px;cursor:pointer;transition:border-color .15s,box-shadow .15s;
+  display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;
+}
+.foro-tema-card:hover{border-color:var(--accent2);box-shadow:0 0 0 2px rgba(58,123,213,.15);}
+.foro-tema-titulo{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.foro-tema-meta{font-size:11px;color:var(--text3);display:flex;gap:12px;flex-wrap:wrap;}
+.foro-tema-meta span{display:flex;align-items:center;gap:4px;}
+.foro-tema-badge{
+  background:var(--bg3);border:1px solid var(--border);border-radius:20px;
+  padding:3px 10px;font-size:11px;color:var(--text2);white-space:nowrap;
+  display:flex;align-items:center;gap:4px;
+}
+.foro-empty{text-align:center;padding:60px 20px;color:var(--text3);font-size:14px;}
+
+/* Modal foro — nuevo tema */
+#foroModalNuevo{display:none;position:fixed;inset:0;z-index:900;background:rgba(11,15,26,.7);backdrop-filter:blur(4px);align-items:center;justify-content:center;}
+#foroModalNuevo.open{display:flex;}
+.foro-modal-box{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px 32px;width:100%;max-width:600px;box-shadow:0 40px 80px rgba(0,0,0,.5);}
+.foro-modal-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text);margin-bottom:20px;}
+
+/* Panel lateral — ver tema */
+#foroPanelTema{
+  position:fixed;top:0;right:-100%;width:min(620px,100vw);height:100vh;
+  background:var(--bg2);border-left:1px solid var(--border);z-index:800;
+  transition:right .3s ease;display:flex;flex-direction:column;
+}
+#foroPanelTema.open{right:0;}
+.foro-panel-head{
+  padding:20px 24px;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0;
+}
+.foro-panel-body{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:14px;}
+.foro-panel-foot{padding:16px 24px;border-top:1px solid var(--border);flex-shrink:0;}
+.foro-post-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px;}
+.foro-post-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px;}
+.foro-post-autor{font-size:12px;font-weight:600;color:var(--accent2);}
+.foro-post-fecha{font-size:10px;color:var(--text3);}
+.foro-post-texto{font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap;word-break:break-word;}
+.foro-post-texto .mention{color:var(--accent);font-weight:600;}
+.foro-post-delete{font-size:10px;background:none;border:none;color:var(--danger);cursor:pointer;padding:0;opacity:.7;transition:opacity .15s;}
+.foro-post-delete:hover{opacity:1;}
+.foro-reply-row{display:flex;gap:8px;align-items:flex-end;}
+.foro-reply-wrap{position:relative;flex:1;}
+.foro-mention-dropdown{
+  position:absolute;bottom:100%;left:0;right:0;background:var(--bg3);
+  border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.4);
+  z-index:910;display:none;max-height:160px;overflow-y:auto;
+}
+.foro-mention-dropdown.open{display:block;}
+.foro-mention-item{padding:8px 12px;font-size:12px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:8px;}
+.foro-mention-item:hover{background:var(--border);}
+.foro-mention-item strong{color:var(--accent2);}
+.foro-tema-op{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:6px;}
+.foro-tema-op-titulo{font-family:'DM Serif Display',serif;font-size:16px;color:var(--text);margin-bottom:8px;}
+.foro-tema-op-cuerpo{font-size:13px;color:var(--text2);line-height:1.65;white-space:pre-wrap;word-break:break-word;}
+.foro-tema-op-cuerpo .mention{color:var(--accent);font-weight:600;}
+.foro-sep{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:2px;}
+
 /* ── Responsive ── */
 @media(max-width:1100px){.detail-body{grid-template-columns:1fr 1fr;}.kpi-row{grid-template-columns:repeat(3,1fr);}}
 @media(max-width:768px){.container{padding:14px;}header{padding:0 14px;}.kpi-row{grid-template-columns:repeat(2,1fr);}.seremis-grid{grid-template-columns:1fr;}.type-selector{grid-template-columns:repeat(2,1fr);}}
@@ -632,6 +697,7 @@ tr:hover td{background:rgba(255,255,255,.018);cursor:pointer;}
     <div class="tab-btn" onclick="switchTab('contrataciones',this)">📋 Contrataciones <span id="vbBadge" style="display:none;background:var(--accent);color:#0b0f1a;border-radius:10px;padding:1px 7px;font-size:9px;font-weight:700;margin-left:3px">0</span></div>
     <div class="tab-btn" onclick="switchTab('usuarios',this)">👥 Usuarios y SEREMIs</div>
     <div class="tab-btn" onclick="switchTab('kpis',this)">📈 KPIs / Indicadores</div>
+    <div class="tab-btn" onclick="switchTab('foro',this);foroLoad()">💬 Foro</div>
   </div>
 
   <!-- SEREMI tab nav -->
@@ -640,6 +706,7 @@ tr:hover td{background:rgba(255,255,255,.018);cursor:pointer;}
     <div class="tab-btn" onclick="switchTab('miseremi',this)">📋 Mi SEREMI</div>
     <div class="tab-btn" onclick="switchTab('kpis',this)">📈 Mis KPIs</div>
     <div class="tab-btn" onclick="switchTab('contrataciones',this)">📋 Mis Contrataciones <span id="vbBadgeSeremi" style="display:none;background:var(--accent);color:#0b0f1a;border-radius:10px;padding:1px 7px;font-size:9px;font-weight:700;margin-left:3px">0</span></div>
+    <div class="tab-btn" onclick="switchTab('foro',this);foroLoad()">💬 Foro</div>
   </div>
 
   <!-- TAB: DASHBOARD -->
@@ -976,6 +1043,73 @@ tr:hover td{background:rgba(255,255,255,.018);cursor:pointer;}
         <thead><tr><th>Indicador</th><th>Meta</th><th>Real</th><th>% Avance</th><th>Estado</th><th>Período</th><th>Unidad</th><th>Acción</th></tr></thead>
         <tbody id="kpiBody"></tbody>
       </table>
+    </div>
+  </div>
+
+  <!-- TAB: FORO -->
+  <div class="tab-content" id="tab-foro">
+    <div class="container">
+      <div class="foro-header">
+        <div>
+          <div class="section-title">💬 Foro Interno</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:4px">Crea temas y menciona usuarios con @</div>
+        </div>
+        <button class="btn btn-primary" onclick="foroAbrirNuevo()">+ Nuevo Tema</button>
+      </div>
+      <div class="foro-temas-list" id="foroTemasList">
+        <div class="foro-empty">Cargando temas…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL FORO — NUEVO TEMA
+══════════════════════════════════════ -->
+<div id="foroModalNuevo" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="foro-modal-box">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div class="foro-modal-title">💬 Nuevo Tema</div>
+      <button class="detail-close" onclick="document.getElementById('foroModalNuevo').classList.remove('open')">×</button>
+    </div>
+    <div class="form-group" style="margin-bottom:14px">
+      <label class="form-label">Título</label>
+      <input class="form-input" id="foroNuevoTitulo" placeholder="Título del tema…" maxlength="200">
+    </div>
+    <div class="form-group" style="margin-bottom:18px">
+      <label class="form-label">Mensaje (usa @ para mencionar usuarios)</label>
+      <div style="position:relative">
+        <textarea class="form-textarea" id="foroNuevoCuerpo" rows="5" placeholder="Escribe tu mensaje… usa @nombre para mencionar"></textarea>
+        <div class="foro-mention-dropdown" id="foroNuevoMentionDrop"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn" onclick="document.getElementById('foroModalNuevo').classList.remove('open')">Cancelar</button>
+      <button class="btn btn-primary" onclick="foroCrearTema()">Publicar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PANEL LATERAL — VER TEMA
+══════════════════════════════════════ -->
+<div id="foroPanelTema">
+  <div class="foro-panel-head">
+    <div style="flex:1">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:4px">Tema</div>
+      <div id="foroPanelTitulo" style="font-family:'DM Serif Display',serif;font-size:17px;color:var(--text)"></div>
+    </div>
+    <button class="detail-close" onclick="document.getElementById('foroPanelTema').classList.remove('open')">×</button>
+  </div>
+  <div class="foro-panel-body" id="foroPanelBody"></div>
+  <div class="foro-panel-foot">
+    <div class="foro-sep" style="margin-bottom:8px">Tu respuesta</div>
+    <div class="foro-reply-row">
+      <div class="foro-reply-wrap">
+        <textarea class="form-textarea" id="foroReplyTexto" rows="2" placeholder="Escribe tu respuesta… usa @nombre para mencionar" style="margin:0"></textarea>
+        <div class="foro-mention-dropdown" id="foroReplyMentionDrop"></div>
+      </div>
+      <button class="btn btn-primary" onclick="foroEnviarReply()" style="white-space:nowrap;align-self:flex-end">Responder</button>
     </div>
   </div>
 </div>
@@ -3374,6 +3508,233 @@ function escHtml(s) {
 // saveRecord already calls authFetch for /api/visitas, /api/contactos, etc.
 // After saving, reload Mi SEREMI if currently on that tab.
 const _origSaveRecord = saveRecord;
+
+// ═══════════════════════════════════════════════════════
+//  FORO
+// ═══════════════════════════════════════════════════════
+let _foroUsers = [];         // lista de usuarios para @menciones
+let _foroTemaActivo = null;  // id del tema abierto en el panel
+
+/* Carga usuarios disponibles para mencionar */
+async function foroLoadUsers() {
+  if (_foroUsers.length) return;
+  try {
+    const r = await authFetch('/api/foro/users');
+    if (r.ok) _foroUsers = await r.json();
+  } catch(e) { /* silencioso */ }
+}
+
+/* Renderiza texto convirtiendo @username en span.mention */
+function foroRenderTexto(texto) {
+  return escHtml(texto).replace(/@([\w\u00C0-\u017E]+)/g,
+    (_, u) => `<span class="mention">@${u}</span>`);
+}
+
+function foroFmtFecha(s) {
+  if (!s) return '';
+  const d = new Date(s.replace(' ', 'T'));
+  return d.toLocaleDateString('es-CL', { day:'2-digit', month:'short', year:'numeric' })
+       + ' ' + d.toLocaleTimeString('es-CL', { hour:'2-digit', minute:'2-digit' });
+}
+
+/* Carga y renderiza la lista de temas */
+async function foroLoad() {
+  await foroLoadUsers();
+  const el = document.getElementById('foroTemasList');
+  if (!el) return;
+  el.innerHTML = '<div class="foro-empty">Cargando…</div>';
+  try {
+    const r = await authFetch('/api/foro/temas');
+    const temas = await r.json();
+    if (!temas.length) {
+      el.innerHTML = '<div class="foro-empty">Aún no hay temas. ¡Crea el primero!</div>';
+      return;
+    }
+    el.innerHTML = temas.map(t => `
+      <div class="foro-tema-card" onclick="foroAbrirTema(${t.id})">
+        <div>
+          <div class="foro-tema-titulo">${escHtml(t.titulo)}</div>
+          <div class="foro-tema-meta">
+            <span>✍️ ${escHtml(t.autorNombre)}</span>
+            <span>🕐 ${foroFmtFecha(t.creadoEn)}</span>
+            <span>⏱ última actividad ${foroFmtFecha(t.ultimaActividad)}</span>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="foro-tema-badge">💬 ${t.respuestas}</div>
+          ${currentUser?.rol==='admin'||currentUser?.id===t.autorId
+            ? `<button class="foro-post-delete" onclick="event.stopPropagation();foroEliminarTema(${t.id})">Eliminar</button>`
+            : ''}
+        </div>
+      </div>`).join('');
+  } catch(e) { el.innerHTML = '<div class="foro-empty" style="color:var(--danger)">Error al cargar temas</div>'; }
+}
+
+/* Abre modal para nuevo tema */
+function foroAbrirNuevo() {
+  document.getElementById('foroNuevoTitulo').value = '';
+  document.getElementById('foroNuevoCuerpo').value = '';
+  document.getElementById('foroModalNuevo').classList.add('open');
+  setTimeout(() => document.getElementById('foroNuevoTitulo').focus(), 100);
+}
+
+/* Crea un nuevo tema */
+async function foroCrearTema() {
+  const titulo = document.getElementById('foroNuevoTitulo').value.trim();
+  const cuerpo = document.getElementById('foroNuevoCuerpo').value.trim();
+  if (!titulo || !cuerpo) { showToast('Completa título y mensaje', '#e85454'); return; }
+  try {
+    const r = await authFetch('/api/foro/temas', {
+      method: 'POST',
+      body: JSON.stringify({ titulo, cuerpo })
+    });
+    if (!r.ok) throw new Error();
+    document.getElementById('foroModalNuevo').classList.remove('open');
+    showToast('✓ Tema publicado', '#2ec4a5');
+    foroLoad();
+  } catch(e) { showToast('Error al publicar tema', '#e85454'); }
+}
+
+/* Elimina un tema */
+async function foroEliminarTema(id) {
+  if (!confirm('¿Eliminar este tema y todas sus respuestas?')) return;
+  try {
+    const r = await authFetch(`/api/foro/temas/${id}`, { method: 'DELETE' });
+    if (!r.ok) throw new Error();
+    showToast('✓ Tema eliminado', '#2ec4a5');
+    document.getElementById('foroPanelTema').classList.remove('open');
+    foroLoad();
+  } catch(e) { showToast('Error al eliminar tema', '#e85454'); }
+}
+
+/* Abre el panel lateral con el tema y sus respuestas */
+async function foroAbrirTema(id) {
+  _foroTemaActivo = id;
+  document.getElementById('foroPanelTema').classList.add('open');
+  document.getElementById('foroPanelTitulo').textContent = 'Cargando…';
+  document.getElementById('foroPanelBody').innerHTML = '';
+  document.getElementById('foroReplyTexto').value = '';
+  try {
+    const r = await authFetch(`/api/foro/temas/${id}/posts`);
+    const { tema, posts } = await r.json();
+    document.getElementById('foroPanelTitulo').textContent = tema.titulo;
+    const body = document.getElementById('foroPanelBody');
+    body.innerHTML = `
+      <div class="foro-tema-op">
+        <div class="foro-tema-op-titulo">${escHtml(tema.titulo)}</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:10px;display:flex;gap:10px">
+          <span>✍️ ${escHtml(tema.autorNombre)}</span>
+          <span>🕐 ${foroFmtFecha(tema.creadoEn)}</span>
+        </div>
+        <div class="foro-tema-op-cuerpo">${foroRenderTexto(tema.cuerpo)}</div>
+      </div>
+      ${posts.length ? `<div class="foro-sep">${posts.length} respuesta${posts.length!==1?'s':''}</div>` : '<div style="color:var(--text3);font-size:12px;text-align:center;padding:10px 0">Aún no hay respuestas. ¡Sé el primero!</div>'}
+      ${posts.map(p => `
+        <div class="foro-post-card" id="foroPost${p.id}">
+          <div class="foro-post-header">
+            <div>
+              <span class="foro-post-autor">@${escHtml(p.autorNombre)}</span>
+              <span class="foro-post-fecha" style="margin-left:8px">${foroFmtFecha(p.creadoEn)}</span>
+            </div>
+            ${currentUser?.rol==='admin'||currentUser?.id===p.autorId
+              ? `<button class="foro-post-delete" onclick="foroEliminarPost(${p.id})">Eliminar</button>`
+              : ''}
+          </div>
+          <div class="foro-post-texto">${foroRenderTexto(p.texto)}</div>
+        </div>`).join('')}`;
+    body.scrollTop = body.scrollHeight;
+  } catch(e) {
+    document.getElementById('foroPanelBody').innerHTML = '<div style="color:var(--danger);font-size:12px">Error al cargar tema</div>';
+  }
+}
+
+/* Envía una respuesta al tema activo */
+async function foroEnviarReply() {
+  const texto = document.getElementById('foroReplyTexto').value.trim();
+  if (!texto) return;
+  if (!_foroTemaActivo) return;
+  try {
+    const r = await authFetch(`/api/foro/temas/${_foroTemaActivo}/posts`, {
+      method: 'POST',
+      body: JSON.stringify({ texto })
+    });
+    if (!r.ok) throw new Error();
+    document.getElementById('foroReplyTexto').value = '';
+    showToast('✓ Respuesta enviada', '#2ec4a5');
+    foroAbrirTema(_foroTemaActivo);
+    foroLoad();
+  } catch(e) { showToast('Error al enviar respuesta', '#e85454'); }
+}
+
+/* Elimina un post */
+async function foroEliminarPost(id) {
+  if (!confirm('¿Eliminar esta respuesta?')) return;
+  try {
+    const r = await authFetch(`/api/foro/posts/${id}`, { method: 'DELETE' });
+    if (!r.ok) throw new Error();
+    showToast('✓ Respuesta eliminada', '#2ec4a5');
+    foroAbrirTema(_foroTemaActivo);
+    foroLoad();
+  } catch(e) { showToast('Error al eliminar', '#e85454'); }
+}
+
+/* ── @MENCIONES ──────────────────────────────────────── */
+function foroSetupMention(textareaId, dropdownId) {
+  const ta = document.getElementById(textareaId);
+  const dd = document.getElementById(dropdownId);
+  if (!ta || !dd) return;
+
+  ta.addEventListener('input', async () => {
+    await foroLoadUsers();
+    const val = ta.value;
+    const cur = ta.selectionStart;
+    // Encuentra el @ más cercano antes del cursor
+    const before = val.slice(0, cur);
+    const match = before.match(/@([\w\u00C0-\u017E]*)$/);
+    if (!match) { dd.classList.remove('open'); dd.innerHTML = ''; return; }
+    const query = match[1].toLowerCase();
+    const filtered = _foroUsers.filter(u =>
+      u.username.toLowerCase().includes(query) ||
+      (u.nombre||'').toLowerCase().includes(query)
+    ).slice(0, 6);
+    if (!filtered.length) { dd.classList.remove('open'); dd.innerHTML = ''; return; }
+    dd.innerHTML = filtered.map(u => `
+      <div class="foro-mention-item" onclick="foroInsertMention('${textareaId}','${dropdownId}','${u.username}')">
+        <strong>@${escHtml(u.username)}</strong>
+        <span style="color:var(--text3)">${escHtml(u.nombre||'')}</span>
+      </div>`).join('');
+    dd.classList.add('open');
+  });
+
+  ta.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { dd.classList.remove('open'); dd.innerHTML = ''; }
+  });
+
+  document.addEventListener('click', ev => {
+    if (!ta.contains(ev.target) && !dd.contains(ev.target))
+      dd.classList.remove('open');
+  }, true);
+}
+
+function foroInsertMention(textareaId, dropdownId, username) {
+  const ta = document.getElementById(textareaId);
+  const dd = document.getElementById(dropdownId);
+  const val = ta.value;
+  const cur = ta.selectionStart;
+  const before = val.slice(0, cur);
+  const replaced = before.replace(/@([\w\u00C0-\u017E]*)$/, `@${username} `);
+  ta.value = replaced + val.slice(cur);
+  ta.focus();
+  ta.selectionStart = ta.selectionEnd = replaced.length;
+  dd.classList.remove('open');
+  dd.innerHTML = '';
+}
+
+/* Inicializa los listeners de mención cuando el DOM esté listo */
+document.addEventListener('DOMContentLoaded', () => {
+  foroSetupMention('foroNuevoCuerpo', 'foroNuevoMentionDrop');
+  foroSetupMention('foroReplyTexto', 'foroReplyMentionDrop');
+});
 </script>
 </body>
 </html>

@@ -587,6 +587,87 @@ app.get('/api/audit', authRequired, (req, res) => {
   res.json(rows);
 });
 
+/* ═══════════════════════════════════════════════════════════
+   FORO
+═══════════════════════════════════════════════════════════ */
+
+/* Lista de usuarios para @menciones */
+app.get('/api/foro/users', authRequired, (req, res) => {
+  const rows = db.prepare('SELECT id, username, nombre, cargo FROM users ORDER BY nombre').all();
+  res.json(rows);
+});
+
+/* Listar temas (con conteo de respuestas) */
+app.get('/api/foro/temas', authRequired, (req, res) => {
+  const rows = db.prepare(`
+    SELECT t.*,
+           (SELECT COUNT(*) FROM foro_posts p WHERE p.temaId = t.id) AS respuestas
+    FROM foro_temas t
+    ORDER BY t.ultimaActividad DESC
+  `).all();
+  res.json(rows);
+});
+
+/* Crear tema */
+app.post('/api/foro/temas', authRequired, (req, res) => {
+  const { titulo, cuerpo } = req.body;
+  if (!titulo?.trim() || !cuerpo?.trim())
+    return res.status(400).json({ error: 'Título y cuerpo son obligatorios' });
+  const u = db.prepare('SELECT nombre FROM users WHERE id = ?').get(req.jwtUser.id);
+  const autorNombre = u?.nombre || req.jwtUser.username;
+  const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+  const info = db.prepare(`
+    INSERT INTO foro_temas (titulo, cuerpo, autorId, autorNombre, creadoEn, ultimaActividad)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(titulo.trim(), cuerpo.trim(), req.jwtUser.id, autorNombre, now, now);
+  res.json({ id: info.lastInsertRowid });
+});
+
+/* Eliminar tema (admin o dueño) */
+app.delete('/api/foro/temas/:id', authRequired, (req, res) => {
+  const tema = db.prepare('SELECT * FROM foro_temas WHERE id = ?').get(req.params.id);
+  if (!tema) return res.status(404).json({ error: 'Tema no encontrado' });
+  if (req.jwtUser.rol !== 'admin' && req.jwtUser.id !== tema.autorId)
+    return res.status(403).json({ error: 'Sin permiso' });
+  db.prepare('DELETE FROM foro_temas WHERE id = ?').run(req.params.id);
+  res.json({ ok: true });
+});
+
+/* Listar posts de un tema */
+app.get('/api/foro/temas/:id/posts', authRequired, (req, res) => {
+  const tema = db.prepare('SELECT * FROM foro_temas WHERE id = ?').get(req.params.id);
+  if (!tema) return res.status(404).json({ error: 'Tema no encontrado' });
+  const posts = db.prepare('SELECT * FROM foro_posts WHERE temaId = ? ORDER BY id ASC').all(req.params.id);
+  res.json({ tema, posts });
+});
+
+/* Agregar post/respuesta */
+app.post('/api/foro/temas/:id/posts', authRequired, (req, res) => {
+  const { texto } = req.body;
+  if (!texto?.trim()) return res.status(400).json({ error: 'Texto vacío' });
+  const tema = db.prepare('SELECT id FROM foro_temas WHERE id = ?').get(req.params.id);
+  if (!tema) return res.status(404).json({ error: 'Tema no encontrado' });
+  const u = db.prepare('SELECT nombre FROM users WHERE id = ?').get(req.jwtUser.id);
+  const autorNombre = u?.nombre || req.jwtUser.username;
+  const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
+  const info = db.prepare(`
+    INSERT INTO foro_posts (temaId, texto, autorId, autorNombre, creadoEn)
+    VALUES (?, ?, ?, ?, ?)
+  `).run(req.params.id, texto.trim(), req.jwtUser.id, autorNombre, now);
+  db.prepare('UPDATE foro_temas SET ultimaActividad = ? WHERE id = ?').run(now, req.params.id);
+  res.json({ id: info.lastInsertRowid });
+});
+
+/* Eliminar post (admin o dueño) */
+app.delete('/api/foro/posts/:id', authRequired, (req, res) => {
+  const post = db.prepare('SELECT * FROM foro_posts WHERE id = ?').get(req.params.id);
+  if (!post) return res.status(404).json({ error: 'Post no encontrado' });
+  if (req.jwtUser.rol !== 'admin' && req.jwtUser.id !== post.autorId)
+    return res.status(403).json({ error: 'Sin permiso' });
+  db.prepare('DELETE FROM foro_posts WHERE id = ?').run(req.params.id);
+  res.json({ ok: true });
+});
+
 /* ── Start ─────────────────────────────────────────────── */
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

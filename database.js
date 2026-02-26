@@ -171,6 +171,26 @@ function initDB() {
       \`fecha\`      TEXT
     );
 
+    CREATE TABLE IF NOT EXISTS \`foro_temas\` (
+      \`id\`              INTEGER PRIMARY KEY AUTOINCREMENT,
+      \`titulo\`          TEXT NOT NULL,
+      \`cuerpo\`          TEXT NOT NULL,
+      \`autorId\`         TEXT NOT NULL,
+      \`autorNombre\`     TEXT NOT NULL,
+      \`creadoEn\`        TEXT NOT NULL,
+      \`ultimaActividad\` TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS \`foro_posts\` (
+      \`id\`          INTEGER PRIMARY KEY AUTOINCREMENT,
+      \`temaId\`      INTEGER NOT NULL,
+      \`texto\`       TEXT NOT NULL,
+      \`autorId\`     TEXT NOT NULL,
+      \`autorNombre\` TEXT NOT NULL,
+      \`creadoEn\`    TEXT NOT NULL,
+      FOREIGN KEY (\`temaId\`) REFERENCES \`foro_temas\`(\`id\`) ON DELETE CASCADE
+    );
+
     CREATE INDEX IF NOT EXISTS idx_visitas_seremi    ON visitas(seremiId);
     CREATE INDEX IF NOT EXISTS idx_visitas_fecha     ON visitas(fecha);
     CREATE INDEX IF NOT EXISTS idx_contactos_seremi  ON contactos(seremiId);
@@ -181,6 +201,7 @@ function initDB() {
     CREATE INDEX IF NOT EXISTS idx_comentarios_ref   ON comentarios(tabla, registroId);
     CREATE INDEX IF NOT EXISTS idx_archivos_ref      ON archivos(tabla, registroId);
     CREATE INDEX IF NOT EXISTS idx_kpi_seremi        ON kpi_indicadores(seremiId);
+    CREATE INDEX IF NOT EXISTS idx_foro_posts_tema   ON foro_posts(temaId);
   `);
 
   /* ── Helpers ────────────────────────────────────────────── */
