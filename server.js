@@ -69,6 +69,37 @@ function audit(userId, userName, accion, tabla, registroId, detalles) {
   } catch(e) { /* silencioso */ }
 }
 
+/* ── Detección de menciones ─────────────────────────────── */
+function detectMentions(texto, autorId, autorNombre, temaId) {
+  try {
+    // Buscar todas las menciones @username en el texto
+    const mentionRegex = /@(\w+)/g;
+    const matches = [...texto.matchAll(mentionRegex)];
+    
+    if (matches.length === 0) return;
+    
+    const now = new Date().toISOString().slice(0,19).replace('T',' ');
+    const insertNotif = db.prepare(`
+      INSERT INTO notificaciones (userId, tipo, titulo, mensaje, url, leida, creadoEn, autorId, autorNombre)
+      VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?)
+    `);
+    
+    // Buscar usuarios mencionados
+    const usernames = [...new Set(matches.map(m => m[1]))]; // Eliminar duplicados
+    for (const username of usernames) {
+      const user = db.prepare('SELECT id, username FROM users WHERE username = ?').get(username);
+      if (user && user.id !== autorId) { // No notificar al autor mismo
+        const titulo = `${autorNombre} te mencionó en el foro`;
+        const mensaje = texto.length > 100 ? texto.substring(0, 100) + '...' : texto;
+        const url = `/foro/tema/${temaId}`;
+        insertNotif.run(user.id, 'mencion', titulo, mensaje, url, now, autorId, autorNombre);
+      }
+    }
+  } catch(e) { 
+    console.error('Error detectando menciones:', e);
+  }
+}
+
 /* ── JWT middleware ─────────────────────────────────────── */
 function authRequired(req, res, next) {
   const header = req.headers['authorization'] || '';
@@ -620,6 +651,10 @@ app.post('/api/foro/temas', authRequired, (req, res) => {
     INSERT INTO foro_temas (titulo, cuerpo, autorId, autorNombre, creadoEn, ultimaActividad)
     VALUES (?, ?, ?, ?, ?, ?)
   `).run(titulo.trim(), cuerpo.trim(), req.jwtUser.id, autorNombre, now, now);
+  
+  // Detectar menciones en el cuerpo del tema
+  detectMentions(cuerpo.trim(), req.jwtUser.id, autorNombre, info.lastInsertRowid);
+  
   res.json({ id: info.lastInsertRowid });
 });
 
@@ -655,6 +690,10 @@ app.post('/api/foro/temas/:id/posts', authRequired, (req, res) => {
     VALUES (?, ?, ?, ?, ?)
   `).run(req.params.id, texto.trim(), req.jwtUser.id, autorNombre, now);
   db.prepare('UPDATE foro_temas SET ultimaActividad = ? WHERE id = ?').run(now, req.params.id);
+  
+  // Detectar menciones y crear notificaciones
+  detectMentions(texto.trim(), req.jwtUser.id, autorNombre, req.params.id);
+  
   res.json({ id: info.lastInsertRowid });
 });
 
@@ -665,6 +704,60 @@ app.delete('/api/foro/posts/:id', authRequired, (req, res) => {
   if (req.jwtUser.rol !== 'admin' && req.jwtUser.id !== post.autorId)
     return res.status(403).json({ error: 'Sin permiso' });
   db.prepare('DELETE FROM foro_posts WHERE id = ?').run(req.params.id);
+  res.json({ ok: true });
+});
+
+/* ═══════════════════════════════════════════════════════════
+   NOTIFICACIONES
+═══════════════════════════════════════════════════════════ */
+
+/* Obtener todas las notificaciones del usuario */
+app.get('/api/notificaciones', authRequired, (req, res) => {
+  const notifs = db.prepare(`
+    SELECT * FROM notificaciones 
+    WHERE userId = ? 
+    ORDER BY creadoEn DESC 
+    LIMIT 50
+  `).all(req.jwtUser.id);
+  res.json(notifs);
+});
+
+/* Obtener conteo de notificaciones no leídas */
+app.get('/api/notificaciones/count', authRequired, (req, res) => {
+  const result = db.prepare(`
+    SELECT COUNT(*) as count 
+    FROM notificaciones 
+    WHERE userId = ? AND leida = 0
+  `).get(req.jwtUser.id);
+  res.json({ count: result.count });
+});
+
+/* Marcar una notificación como leída */
+app.put('/api/notificaciones/:id/leer', authRequired, (req, res) => {
+  const notif = db.prepare('SELECT * FROM notificaciones WHERE id = ?').get(req.params.id);
+  if (!notif) return res.status(404).json({ error: 'Notificación no encontrada' });
+  if (notif.userId !== req.jwtUser.id) 
+    return res.status(403).json({ error: 'Sin permiso' });
+  
+  db.prepare('UPDATE notificaciones SET leida = 1 WHERE id = ?').run(req.params.id);
+  res.json({ ok: true });
+});
+
+/* Marcar todas las notificaciones como leídas */
+app.put('/api/notificaciones/leer-todas', authRequired, (req, res) => {
+  db.prepare('UPDATE notificaciones SET leida = 1 WHERE userId = ? AND leida = 0')
+    .run(req.jwtUser.id);
+  res.json({ ok: true });
+});
+
+/* Eliminar notificación */
+app.delete('/api/notificaciones/:id', authRequired, (req, res) => {
+  const notif = db.prepare('SELECT * FROM notificaciones WHERE id = ?').get(req.params.id);
+  if (!notif) return res.status(404).json({ error: 'Notificación no encontrada' });
+  if (notif.userId !== req.jwtUser.id)
+    return res.status(403).json({ error: 'Sin permiso' });
+  
+  db.prepare('DELETE FROM notificaciones WHERE id = ?').run(req.params.id);
   res.json({ ok: true });
 });
 
