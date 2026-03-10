@@ -1,0 +1,97 @@
+/* Badge Styles */
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Roles */
+.badge-admin {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.badge-seremi {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+/* Estados generales */
+.badge-success {
+  background: #4caf50;
+  color: white;
+}
+
+.badge-warning {
+  background: #ff9800;
+  color: white;
+}
+
+.badge-danger {
+  background: #f44336;
+  color: white;
+}
+
+.badge-info {
+  background: #2196f3;
+  color: white;
+}
+
+/* Tono de prensa */
+.badge-positivo {
+  background: #4caf50;
+  color: white;
+}
+
+.badge-neutro {
+  background: #ff9800;
+  color: white;
+}
+
+.badge-negativo {
+  background: #f44336;
+  color: white;
+}
+
+/* Urgencia */
+.badge-alta {
+  background: #f44336;
+  color: white;
+  animation: pulse-red 2s ease-in-out infinite;
+}
+
+.badge-media {
+  background: #ff9800;
+  color: white;
+}
+
+.badge-baja {
+  background: #4caf50;
+  color: white;
+}
+
+/* Estados de contratación */
+.badge-pendiente {
+  background: #ff9800;
+  color: white;
+}
+
+.badge-aprobada {
+  background: #4caf50;
+  color: white;
+}
+
+/* Animación para urgencia alta */
+@keyframes pulse-red {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}

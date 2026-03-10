@@ -1,0 +1,474 @@
+/* ══════════════════════════════
+   Nuevo Registro Modal — single-view layout matching index.html
+══════════════════════════════ */
+
+/* Section label (SEREMI (ADMIN), TIPO DE REGISTRO) */
+.nr-section-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+
+/* Type selector grid — 4 columns, compact */
+.nr-type-selector {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.nr-type-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.nr-type-card:hover {
+  border-color: var(--accent2);
+  background: rgba(58, 123, 213, 0.08);
+}
+
+.nr-type-card.active {
+  border-color: var(--accent2);
+  background: rgba(58, 123, 213, 0.12);
+  box-shadow: 0 0 0 2px rgba(58, 123, 213, 0.2);
+}
+
+.nr-type-icon {
+  font-size: 22px;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.nr-type-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text2);
+  line-height: 1.3;
+  white-space: pre-line;
+}
+
+.nr-type-card.active .nr-type-label {
+  color: var(--accent2);
+}
+
+/* Form rows */
+.nr-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 13px;
+  margin-bottom: 0;
+}
+
+/* Info box */
+.nr-info-box {
+  background: rgba(58, 123, 213, 0.07);
+  border: 1px solid rgba(58, 123, 213, 0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  font-size: 11px;
+  color: var(--text2);
+}
+
+/* Urgencia / tono buttons */
+.nr-urgencia-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.nr-urgencia-btn {
+  flex: 1;
+  padding: 8px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text2);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.nr-urgencia-btn:hover {
+  border-color: var(--text3);
+}
+
+.nr-urgencia-btn.active {
+  border-color: var(--accent2);
+  background: rgba(58, 123, 213, 0.12);
+  color: var(--accent2);
+}
+
+/* Shared form inputs — used in this modal */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 13px;
+}
+
+.form-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--text3);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  padding: 11px 14px;
+  transition: border-color .15s;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--accent2);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: var(--text3);
+}
+
+.form-select option {
+  background: var(--bg3);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 72px;
+}
+
+.form-input:disabled,
+.form-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Footer buttons (rendered via Modal footer prop) */
+.btn-cancel {
+  padding: 9px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  transition: all .15s;
+}
+
+.btn-cancel:hover {
+  background: var(--bg3);
+}
+
+.btn-save {
+  padding: 9px 22px;
+  border-radius: 8px;
+  background: var(--accent2);
+  border: none;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .15s;
+}
+
+.btn-save:hover:not(:disabled) {
+  background: #4a8be5;
+}
+
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .nr-type-selector {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .nr-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.type-selector-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.type-selector-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.type-selector-header p {
+  font-size: 12px;
+  color: var(--text3);
+}
+
+.type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.type-card {
+  background: var(--bg3);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.type-card:hover {
+  border-color: var(--accent);
+  background: var(--bg2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(58, 123, 213, 0.15);
+}
+
+.type-icon {
+  font-size: 36px;
+  margin-bottom: 4px;
+}
+
+.type-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.type-description {
+  font-size: 11px;
+  color: var(--text3);
+  line-height: 1.4;
+}
+
+/* Form */
+.registro-form {
+  padding: 10px 0;
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--border);
+}
+
+.btn-back {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-back:hover {
+  background: var(--bg2);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.form-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.form-icon {
+  font-size: 24px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text2);
+  margin-bottom: 6px;
+}
+
+.form-select,
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text);
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.form-select:focus,
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--bg2);
+  box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-select:disabled,
+.form-input:disabled,
+.form-textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .type-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .type-card {
+    padding: 20px;
+  }
+}
+
+/* ── Form helpers ─────────────────────────────── */
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.registro-info-box {
+  background: rgba(58, 123, 213, 0.07);
+  border: 1px solid rgba(58, 123, 213, 0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  font-size: 11px;
+  color: var(--text2);
+}
+
+.urgencia-group {
+  display: flex;
+  gap: 8px;
+}
+
+.urgencia-btn {
+  flex: 1;
+  padding: 8px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text2);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+.urgencia-btn.active {
+  border-color: var(--accent);
+  background: rgba(232, 160, 58, 0.1);
+  color: var(--accent);
+}
+
+.modal-form-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.btn-cancel {
+  padding: 9px 18px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text2);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.btn-cancel:hover {
+  background: var(--bg2);
+}
+
+.btn-save {
+  padding: 9px 20px;
+  border-radius: 7px;
+  border: none;
+  background: var(--accent2);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.btn-save:hover:not(:disabled) {
+  background: #4a8be5;
+}
+
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

@@ -1,0 +1,84 @@
+/* Selectors Styles */
+.selector-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.selector-btn {
+  padding: 10px 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  background: white;
+  color: #666;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 100px;
+}
+
+.selector-btn:hover {
+  border-color: #667eea;
+  color: #667eea;
+  transform: translateY(-1px);
+}
+
+/* Estados activos por urgencia */
+.selector-btn.urgencia-alta.active {
+  border-color: #f44336;
+  background: #f44336;
+  color: white;
+}
+
+.selector-btn.urgencia-media.active {
+  border-color: #ff9800;
+  background: #ff9800;
+  color: white;
+}
+
+.selector-btn.urgencia-baja.active {
+  border-color: #4caf50;
+  background: #4caf50;
+  color: white;
+}
+
+/* Estados activos por tono */
+.selector-btn.tono-positivo.active {
+  border-color: #4caf50;
+  background: #4caf50;
+  color: white;
+}
+
+.selector-btn.tono-neutro.active {
+  border-color: #ff9800;
+  background: #ff9800;
+  color: white;
+}
+
+.selector-btn.tono-negativo.active {
+  border-color: #f44336;
+  background: #f44336;
+  color: white;
+}
+
+/* Estado activo genérico */
+.selector-btn.active {
+  border-color: #667eea;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+/* Hover states para botones activos */
+.selector-btn.active:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .selector-btn {
+    flex: 1;
+    min-width: 80px;
+  }
+}

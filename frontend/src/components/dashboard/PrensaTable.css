@@ -1,0 +1,54 @@
+.prensa-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.prensa-table th {
+  padding: 8px 18px;
+  text-align: left;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg3);
+}
+
+.prensa-table td {
+  padding: 9px 18px;
+  font-size: 11px;
+  color: var(--text2);
+  border-bottom: 1px solid rgba(30, 45, 69, 0.5);
+}
+
+.prensa-table tr:last-child td {
+  border-bottom: none;
+}
+
+.prensa-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+}
+
+.prensa-title-cell {
+  color: var(--text) !important;
+  font-weight: 500;
+}
+
+.seremi-tag {
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(58, 123, 213, 0.12);
+  color: var(--accent2);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sentiment {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}

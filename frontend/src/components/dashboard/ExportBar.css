@@ -1,0 +1,51 @@
+/* Export Bar */
+.export-bar {
+  background: var(--bg3);
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.export-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.vdivider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+  margin: 0 5px;
+}
+
+.export-hint {
+  font-size: 10px;
+  color: var(--text3);
+  margin-left: auto;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .export-bar {
+    padding: 10px 15px;
+  }
+
+  .export-hint {
+    margin-left: 0;
+    width: 100%;
+    text-align: center;
+    margin-top: 5px;
+  }
+
+  .vdivider {
+    display: none;
+  }
+}
