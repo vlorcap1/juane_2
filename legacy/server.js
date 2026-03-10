@@ -4,7 +4,7 @@ const fs       = require('fs');
 const bcrypt   = require('bcryptjs');
 const jwt      = require('jsonwebtoken');
 const multer   = require('multer');
-const { initDB } = require('./database');
+const { initDB } = require('../database');
 
 const app = express();
 const db  = initDB();
