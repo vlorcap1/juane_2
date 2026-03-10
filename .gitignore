@@ -2,3 +2,14 @@ node_modules/
 seremis.db
 seremis.db-shm
 seremis.db-wal
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.env
+
+# Frontend build artifacts
+frontend/node_modules/
+frontend/dist/
