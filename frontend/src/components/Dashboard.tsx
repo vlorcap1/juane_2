@@ -68,7 +68,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
       const data = await seremisApi.getSeremisData();
       console.log('Data loaded:', data);
       setSeremisData(data);
-      calculateKPIs(data);
+      const kpiData = user.rol !== 'admin'
+        ? data.filter((s: any) => String(s.id) === String(user.seremiId))
+        : data;
+      calculateKPIs(kpiData);
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {
@@ -94,7 +97,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   };
 
   const filtering = () => {
-    if (sector === 'all') {
+    if (user.rol !== 'admin') {
+      setFilteredData(seremisData.filter(s => String(s.id) === String(user.seremiId)));
+    } else if (sector === 'all') {
       setFilteredData(seremisData);
     } else {
       setFilteredData(seremisData.filter(s => s.sector === sector));
@@ -288,7 +293,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
             ⬇ Excel Prensa
           </button>
         </div>
-        <PrensaTable data={seremisData} limit={10} />
+        <PrensaTable data={filteredData} limit={10} />
       </div>
 
       {/* TEMAS + AGENDA (2 columns) */}
@@ -299,7 +304,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
               <span>💡</span> Propuesta de Temas
             </div>
           </div>
-          <TemasBlock data={seremisData} limit={10} />
+          <TemasBlock data={filteredData} limit={10} />
         </div>
         
         <div className="section-block">
@@ -311,7 +316,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
               ⬇ Excel
             </button>
           </div>
-          <AgendaCalendar data={seremisData} />
+          <AgendaCalendar data={filteredData} />
         </div>
       </div>
     </div>

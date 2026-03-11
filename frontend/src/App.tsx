@@ -10,6 +10,7 @@ import { IndicadoresPage } from './components/IndicadoresPage';
 import { ForoPage } from './components/ForoPage';
 import VisitasAutoridadesPage from './components/VisitasAutoridadesPage';
 import SEIAProyectosPage from './components/SEIAProyectosPage';
+import NoticiasPage from './components/NoticiasPage';
 import { ToastProvider } from './components/ui/Toast';
 import { FilterProvider } from './context/FilterContext';
 import { NuevoRegistroProvider } from './context/NuevoRegistroContext';
@@ -128,6 +129,8 @@ const AppContent: React.FC<AppContentProps> = ({ user, onLogout }) => {
         return <ForoPage user={user} />;
       case 'seia':
         return <SEIAProyectosPage />;
+      case 'noticias':
+        return <NoticiasPage user={user} />;
       default:
         return <Dashboard user={user} />;
     }

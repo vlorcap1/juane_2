@@ -19,6 +19,7 @@ from .notificacion import Notificacion
 from .foro import ForoTema, ForoPost
 from .audit import AuditLog
 from .alerta import Alerta
+from .noticia_alerta import FuenteRSS, NoticiaAlerta
 
 __all__ = [
     "User",
@@ -39,5 +40,7 @@ __all__ = [
     "ForoTema",
     "ForoPost",
     "AuditLog",
-    "Alerta"
+    "Alerta",
+    "FuenteRSS",
+    "NoticiaAlerta",
 ]

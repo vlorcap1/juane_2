@@ -556,5 +556,48 @@ export const handleApiError = (error: any): string => {
   return error.message || 'Error desconocido';
 };
 
+// Noticias RSS API
+export const noticiasApi = {
+  getAll: async (etiqueta?: string, limit = 80): Promise<any[]> => {
+    const params: Record<string, any> = { limit };
+    if (etiqueta && etiqueta !== 'todas') params.etiqueta = etiqueta;
+    const response = await apiClient.get<any[]>('/api/noticias', { params });
+    return handleResponse(response);
+  },
+
+  getEtiquetas: async (): Promise<string[]> => {
+    const response = await apiClient.get<string[]>('/api/noticias/etiquetas');
+    return handleResponse(response);
+  },
+
+  sync: async (): Promise<{ nuevas: number; total_procesadas: number }> => {
+    const response = await apiClient.post<{ nuevas: number; total_procesadas: number }>('/api/noticias/sync');
+    return handleResponse(response);
+  },
+};
+
+// Fuentes RSS API
+export const fuentesRssApi = {
+  getAll: async (): Promise<any[]> => {
+    const response = await apiClient.get<any[]>('/api/fuentes-rss');
+    return handleResponse(response);
+  },
+
+  create: async (data: { etiqueta: string; url: string; activo?: boolean }): Promise<any> => {
+    const response = await apiClient.post<any>('/api/fuentes-rss', data);
+    return handleResponse(response);
+  },
+
+  update: async (id: number, data: { etiqueta: string; url: string; activo: boolean }): Promise<any> => {
+    const response = await apiClient.put<any>(`/api/fuentes-rss/${id}`, data);
+    return handleResponse(response);
+  },
+
+  delete: async (id: number): Promise<{ ok: boolean }> => {
+    const response = await apiClient.delete<{ ok: boolean }>(`/api/fuentes-rss/${id}`);
+    return handleResponse(response);
+  },
+};
+
 // Export default client for custom requests
 export default apiClient;

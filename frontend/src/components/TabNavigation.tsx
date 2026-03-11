@@ -52,6 +52,12 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({ user, activeTab, o
         >
           🌿 SEIA Proyectos
         </button>
+        <button
+          className={`tab-btn ${activeTab === 'noticias' ? 'active' : ''}`}
+          onClick={() => onTabChange('noticias')}
+        >
+          📰 Noticias RSS
+        </button>
       </div>
     );
   } else {
