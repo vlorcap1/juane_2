@@ -16,9 +16,11 @@ import { NuevoRegistroProvider } from './context/NuevoRegistroContext';
 import { useSessionTimeout } from './hooks/useSessionTimeout';
 import { NuevoRegistroModal } from './components/modals/NuevoRegistroModal';
 
+// POR esto:
 interface User {
+  id: string;
   username: string;
-  role: string;
+  rol: string;
   nombre: string;
   cargo: string;
   sector: string;

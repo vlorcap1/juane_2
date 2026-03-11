@@ -48,6 +48,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
       });
       
       onLoginSuccess({
+        id: response.id,
         username: response.username,
         rol: response.rol,
         nombre: response.nombre,

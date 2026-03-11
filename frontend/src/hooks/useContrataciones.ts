@@ -8,7 +8,7 @@ import { useToast } from '../components/ui/Toast';
 
 export const useContrataciones = (seremiId?: string) => {
   const [contrataciones, setContrataciones] = useState<Contratacion[]>([]);
-  const [stats, setStats] = useState<ContratacionStats | null>(null);
+  const [stats, _setStats] = useState<ContratacionStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { showToast } = useToast();

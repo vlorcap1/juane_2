@@ -1,4 +1,3 @@
-import React from 'react';
 import './SEIAProyectosPage.css';
 
 export default function SEIAProyectosPage() {
