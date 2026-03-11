@@ -24,3 +24,4 @@ class TokenData(BaseModel):
     id: str
     username: str
     rol: str
+    seremiId: Optional[str] = None

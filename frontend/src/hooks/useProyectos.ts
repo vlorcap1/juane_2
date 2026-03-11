@@ -25,7 +25,7 @@ export const useProyectos = (filters?: ProyectoFilters) => {
     } finally {
       setLoading(false);
     }
-  }, [filters, showToast]);
+  }, [filters?.seremiId, showToast]);
 
   useEffect(() => {
     loadProyectos();

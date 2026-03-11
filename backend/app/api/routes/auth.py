@@ -33,7 +33,7 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
     
     # Crear token
     token = create_access_token(
-        data={"id": user.id, "username": user.username, "rol": user.rol}
+        data={"id": user.id, "username": user.username, "rol": user.rol, "seremiId": user.seremiId}
     )
     
     # Audit log

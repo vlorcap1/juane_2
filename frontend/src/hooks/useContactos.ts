@@ -25,7 +25,7 @@ export const useContactos = (filters?: ContactoFilters) => {
     } finally {
       setLoading(false);
     }
-  }, [filters, showToast]);
+  }, [filters?.seremiId, showToast]);
 
   useEffect(() => {
     loadContactos();

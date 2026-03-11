@@ -2,3 +2,6 @@ node_modules/
 seremis.db
 seremis.db-shm
 seremis.db-wal
+
+
+venv/

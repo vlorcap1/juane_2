@@ -25,7 +25,7 @@ export const useNudos = (filters?: NudoFilters) => {
     } finally {
       setLoading(false);
     }
-  }, [filters, showToast]);
+  }, [filters?.seremiId, showToast]);
 
   useEffect(() => {
     loadNudos();

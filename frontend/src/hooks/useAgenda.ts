@@ -25,7 +25,7 @@ export const useAgenda = (filters?: AgendaFilters) => {
     } finally {
       setLoading(false);
     }
-  }, [filters, showToast]);
+  }, [filters?.seremiId, showToast]);
 
   useEffect(() => {
     loadAgenda();

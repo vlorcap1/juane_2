@@ -24,6 +24,7 @@ class Contratacion(Base):
     vbQuien = Column(String)
     vbFecha = Column(String)
     motivoRechazo = Column(String)  # Nuevo campo para comentarios de rechazo
+    subcategoria = Column(String)
     creadoPor = Column(String)
     creadoEn = Column(String)
     

@@ -256,6 +256,7 @@ class ContratacionBase(BaseModel):
     vbQuien: Optional[str] = None
     vbFecha: Optional[str] = None
     motivoRechazo: Optional[str] = None
+    subcategoria: Optional[str] = None
     creadoPor: Optional[str] = None
     creadoEn: Optional[str] = None
 
@@ -280,6 +281,7 @@ class ContratacionUpdate(BaseModel):
     vbQuien: Optional[str] = None
     vbFecha: Optional[str] = None
     motivoRechazo: Optional[str] = None
+    subcategoria: Optional[str] = None
 
 
 class ContratacionResponse(ContratacionBase):

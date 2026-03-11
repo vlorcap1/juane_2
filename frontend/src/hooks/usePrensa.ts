@@ -25,7 +25,7 @@ export const usePrensa = (filters?: PrensaFilters) => {
     } finally {
       setLoading(false);
     }
-  }, [filters, showToast]);
+  }, [filters?.seremiId, showToast]);
 
   useEffect(() => {
     loadPrensa();

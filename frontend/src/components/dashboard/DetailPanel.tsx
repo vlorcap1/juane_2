@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { proyectosApi, nudosApi, temasApi, agendaApi, prensaApi } from '../../api/client';
+import { proyectosApi, nudosApi, temasApi, agendaApi, prensaApi, visitasApi } from '../../api/client';
 import './DetailPanel.css';
 
 interface DetailPanelProps {
@@ -40,6 +40,7 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
   const [temas,     setTemas]       = useState<any[]>([]);
   const [agenda,    setAgenda]      = useState<any[]>([]);
   const [prensa,    setPrensa]      = useState<any[]>([]);
+  const [comunas,   setComunas]     = useState<string[]>([]);
   const [loading,   setLoading]     = useState(true);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -56,18 +57,21 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
     try {
       setLoading(true);
       const sid = seremiId.toString();
-      const [p, n, t, a, pr] = await Promise.all([
+      const [p, n, t, a, pr, vis] = await Promise.all([
         proyectosApi.getAll(sid),
         nudosApi.getAll(sid),
         temasApi.getAll(sid),
         agendaApi.getAll(sid),
         prensaApi.getAll({ seremiId: sid }),
+        visitasApi.getAll({ seremiId: sid }),
       ]);
       setProyectos(p);
       setNudos(n);
       setTemas(t);
       setAgenda(a.sort((x: any, y: any) => (x.fecha || '').localeCompare(y.fecha || '')));
       setPrensa(pr);
+      const uniqueComunas = [...new Set<string>(vis.filter((v: any) => v.comuna).map((v: any) => v.comuna as string))];
+      setComunas(uniqueComunas.sort());
     } catch (e) {
       console.error(e);
     } finally {
@@ -99,7 +103,7 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
         <div style={{ padding: '28px 24px', color: 'var(--text3)', fontSize: 13 }}>Cargando...</div>
       ) : (
         <div className="detail-body">
-          {/* Column 1: Proyectos + Comunas (usamos lugar de cada proyecto como indicador) */}
+          {/* Column 1: Proyectos + Comunas Visitadas */}
           <div className="detail-col">
             <div className="detail-col-title">Proyectos Principales</div>
             <div className="item-list">
@@ -115,6 +119,29 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
                     <span className={`item-badge ${estadoBadge(p.estado)}`}>{p.estado || '—'}</span>
                   </div>
                 ))
+              }
+            </div>
+
+            {/* Comunas Visitadas */}
+            <div style={{ marginTop: 16 }}>
+              <div className="detail-col-title" style={{ marginBottom: 8 }}>Comunas Visitadas</div>
+              {comunas.length === 0
+                ? <div style={{ fontSize: 11, color: 'var(--text3)' }}>Sin comunas registradas</div>
+                : <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+                    {comunas.map(comuna => (
+                      <span key={comuna} style={{
+                        fontSize: 10,
+                        padding: '3px 8px',
+                        borderRadius: 20,
+                        background: 'rgba(46,196,165,.12)',
+                        color: 'var(--accent3)',
+                        border: '1px solid rgba(46,196,165,.25)',
+                        fontWeight: 500,
+                      }}>
+                        📍 {comuna}
+                      </span>
+                    ))}
+                  </div>
               }
             </div>
           </div>

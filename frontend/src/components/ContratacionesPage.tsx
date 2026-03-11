@@ -11,6 +11,23 @@ import { useToast } from './ui/Toast';
 import { useExport } from '../hooks/useExport';
 import './ContratacionesPage.css';
 
+const SUBCATEGORIAS_POR_SEREMI: Record<string, string[]> = {
+  delegado:        ['Senda', 'Subdere', 'Migraciones', 'Segnapred', 'Servel'],
+  economia:        ['Sercotec', 'Corfo', 'INE', 'Sernac', 'Sernatur', 'Sernapesca'],
+  desarrollosocial:['Reinserción Social Juvenil', 'Fosis', 'Senama', 'Senadis', 'Conadi', 'Injuv'],
+  educacion:       ['Director Provincial', 'Superintendente', 'Integra', 'Junji', 'Junaeb', 'Slep Maule Costa', 'Slep Los Alamos', 'Slep los cerezos', 'Slep Maule Valle'],
+  justicia:        ['Registro civil', 'Servicio Medico legal', 'Defensoria penal publica', 'Gendarmeria'],
+  trabajo:         ['Dirección regional', 'Sence', 'IPS'],
+  obras:           ['Vialidad', 'DGA', 'DOH', 'DOP', 'DGAeropuerto', 'Arquitectura', 'SISS'],
+  salud:           ['Servicio de salud', 'Compin', 'Fonasa'],
+  vivienda:        ['Serviu'],
+  agricultura:     ['Indap', 'Sag', 'Conaf', 'CNR', 'Inia'],
+  energia:         ['Sec'],
+  medioambiente:   ['Superintendencia medio ambiente', 'SEA'],
+  deporte:         ['IND'],
+  mineria:         ['Serneagomin'],
+};
+
 interface ContratacionesPageProps {
   user: any;
 }
@@ -100,7 +117,8 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
       monto: '',
       financ: 'Presupuesto SEREMI',
       just: '',
-      estado: 'Pendiente'
+      estado: 'Pendiente',
+      subcategoria: ''
     });
     setShowModal(true);
   };
@@ -533,6 +551,27 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
             </div>
           </div>
 
+          {(() => {
+            const activeSeremiId = (isAdmin ? formData.seremiId : seremiId) || '';
+            const opciones = SUBCATEGORIAS_POR_SEREMI[activeSeremiId] || [];
+            if (opciones.length === 0) return null;
+            return (
+              <div className="form-group">
+                <label className="form-label">SUBCATEGORÍA / SERVICIO</label>
+                <select
+                  className="form-select"
+                  value={formData.subcategoria || ''}
+                  onChange={(e) => setFormData({ ...formData, subcategoria: e.target.value })}
+                >
+                  <option value="">Sin subcategoría</option>
+                  {opciones.map(op => (
+                    <option key={op} value={op}>{op}</option>
+                  ))}
+                </select>
+              </div>
+            );
+          })()}
+
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div className="form-group">
               <label className="form-label">MONTO MENSUAL BRUTO ($) *</label>
@@ -621,6 +660,12 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
                 <div style={{ fontSize: '9px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--text3)', marginBottom: '3px' }}>Tipo de contrato</div>
                 <div style={{ fontSize: '12px', color: 'var(--text)' }}>{selectedContratacion.tipo}</div>
               </div>
+              {selectedContratacion.subcategoria && (
+                <div style={{ background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: '9px', padding: '11px 15px' }}>
+                  <div style={{ fontSize: '9px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--text3)', marginBottom: '3px' }}>Subcategoría / Servicio</div>
+                  <div style={{ fontSize: '12px', color: 'var(--text)' }}>{selectedContratacion.subcategoria}</div>
+                </div>
+              )}
               <div style={{ background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: '9px', padding: '11px 15px', gridColumn: '1 / -1' }}>
                 <div style={{ fontSize: '9px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--text3)', marginBottom: '3px' }}>Tipo de plaza</div>
                 <div style={{ fontSize: '12px', color: 'var(--text)' }}>{selectedContratacion.esNuevo === 'Nuevo' ? '🆕 Plaza nueva' : '🔄 Cambio de plaza actual'}</div>

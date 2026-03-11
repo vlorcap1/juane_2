@@ -28,6 +28,7 @@ def get_current_user(
     user_id = payload.get("id")
     username = payload.get("username")
     rol = payload.get("rol")
+    seremi_id = payload.get("seremiId")
     
     if not user_id or not username:
         raise HTTPException(
@@ -35,7 +36,7 @@ def get_current_user(
             detail="Token inválido"
         )
     
-    return TokenData(id=user_id, username=username, rol=rol)
+    return TokenData(id=user_id, username=username, rol=rol, seremiId=seremi_id)
 
 
 def require_admin(current_user: TokenData = Depends(get_current_user)):
