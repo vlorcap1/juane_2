@@ -72,13 +72,13 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
       c.estado === 'Rechazada' || c.estado === 'rechazada'
     ).length,
     montoTotal: contrataciones.reduce((sum, c) => {
-      const monto = typeof c.monto === 'string' ? parseFloat(c.monto.replace(/[^0-9.-]/g, '')) : (c.monto || 0);
+      const monto = typeof c.monto === 'string' ? parseFloat(c.monto.replace(/\./g, '').replace(',', '.').replace(/[^0-9-]/g, '')) || 0 : (c.monto || 0);
       return sum + monto;
     }, 0),
     montoNuevos: contrataciones
       .filter(c => c.esNuevo === 'Nuevo')
       .reduce((sum, c) => {
-        const monto = typeof c.monto === 'string' ? parseFloat(c.monto.replace(/[^0-9.-]/g, '')) : (c.monto || 0);
+        const monto = typeof c.monto === 'string' ? parseFloat(c.monto.replace(/\./g, '').replace(',', '.').replace(/[^0-9-]/g, '')) || 0 : (c.monto || 0);
         return sum + monto;
       }, 0)
   };
