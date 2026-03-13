@@ -22,7 +22,16 @@ def _strip_html(text: str) -> str:
 
 
 def _parse_feed_sync(url: str) -> dict:
-    feed = feedparser.parse(url)
+    # Google Alerts bloquea requests sin User-Agent de navegador (especialmente desde IPs de servidor)
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/122.0.0.0 Safari/537.36"
+        ),
+        "Accept": "application/rss+xml, application/xml, text/xml, */*",
+    }
+    feed = feedparser.parse(url, request_headers=headers)
     items = []
     for entry in feed.entries[:10]:
         title = _strip_html(entry.get("title", "Sin título"))

@@ -60,6 +60,30 @@ function weatherDesc(code: number): string {
 
 const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 
+// ── Comunas del Maule ────────────────────────────────────────
+const MAULE_COMUNAS = [
+  { nombre: 'Talca',            lat: -35.4264, lon: -71.6554 },
+  { nombre: 'Curicó',           lat: -34.9808, lon: -71.2378 },
+  { nombre: 'Linares',          lat: -35.8506, lon: -71.5955 },
+  { nombre: 'Constitución',     lat: -35.3333, lon: -72.4167 },
+  { nombre: 'Cauquenes',        lat: -36.0131, lon: -72.3144 },
+  { nombre: 'San Javier',       lat: -35.5967, lon: -71.7431 },
+  { nombre: 'Parral',           lat: -36.1500, lon: -71.8333 },
+  { nombre: 'Molina',           lat: -35.1167, lon: -71.2833 },
+  { nombre: 'Longaví',          lat: -35.9833, lon: -71.7167 },
+  { nombre: 'Colbún',           lat: -35.6833, lon: -71.4333 },
+  { nombre: 'Retiro',           lat: -36.0667, lon: -71.7667 },
+  { nombre: 'Yerbas Buenas',    lat: -35.7167, lon: -71.5333 },
+  { nombre: 'San Clemente',     lat: -35.5667, lon: -71.5000 },
+  { nombre: 'Curepto',          lat: -35.0833, lon: -72.0167 },
+  { nombre: 'Chanco',           lat: -35.7333, lon: -72.5333 },
+  { nombre: 'Hualañé',          lat: -34.9833, lon: -71.8167 },
+  { nombre: 'Teno',             lat: -34.8667, lon: -71.1667 },
+  { nombre: 'Romeral',          lat: -34.8667, lon: -71.0833 },
+  { nombre: 'Maule',            lat: -35.5083, lon: -71.6722 },
+  { nombre: 'Pencahue',         lat: -35.3833, lon: -71.8000 },
+];
+
 function formatPublished(raw: string): string {
   if (!raw) return '';
   try {
@@ -87,6 +111,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   const [cityName, setCityName] = useState<string>('');
   const [weatherLoading, setWeatherLoading] = useState(true);
   const [weatherError, setWeatherError] = useState<string>('');
+  const comunaIndexRef = React.useRef(0);
 
   // Slideshow
   useEffect(() => {
@@ -109,54 +134,43 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
       });
   }, []);
 
-  // Fetch weather via geolocation → Open-Meteo
-  useEffect(() => {
-    if (!navigator.geolocation) {
-      setWeatherError('Geolocalización no disponible');
+  // Fetch weather for a given commune index
+  const fetchWeatherForComuna = async (index: number) => {
+    const comuna = MAULE_COMUNAS[index];
+    setWeatherLoading(true);
+    setWeatherError('');
+    setCityName(comuna.nombre);
+    try {
+      const params = new URLSearchParams({
+        latitude: String(comuna.lat),
+        longitude: String(comuna.lon),
+        current: 'temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code',
+        daily: 'weather_code,temperature_2m_max,temperature_2m_min',
+        timezone: 'America/Santiago',
+        forecast_days: '5',
+      });
+      const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
+      const wData = await wRes.json();
+      setWeather(wData);
+    } catch {
+      setWeatherError('No se pudo obtener el clima');
+    } finally {
       setWeatherLoading(false);
-      return;
     }
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const { latitude, longitude } = pos.coords;
-        try {
-          // Reverse geocoding with Nominatim (free, no key)
-          const geoRes = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
-            { headers: { 'Accept-Language': 'es' } }
-          );
-          const geoData = await geoRes.json();
-          const city =
-            geoData.address?.city ||
-            geoData.address?.town ||
-            geoData.address?.village ||
-            geoData.address?.county ||
-            'Tu ubicación';
-          setCityName(city);
+  };
 
-          // Open-Meteo (free, no API key)
-          const params = new URLSearchParams({
-            latitude: String(latitude),
-            longitude: String(longitude),
-            current: 'temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code',
-            daily: 'weather_code,temperature_2m_max,temperature_2m_min',
-            timezone: 'auto',
-            forecast_days: '5',
-          });
-          const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
-          const wData = await wRes.json();
-          setWeather(wData);
-          setWeatherLoading(false);
-        } catch {
-          setWeatherError('No se pudo obtener el clima');
-          setWeatherLoading(false);
-        }
-      },
-      () => {
-        setWeatherError('Permite la ubicación para ver el clima');
-        setWeatherLoading(false);
-      }
-    );
+  // Load weather on mount
+  useEffect(() => {
+    fetchWeatherForComuna(0);
+  }, []);
+
+  // Rotate commune every 20 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      comunaIndexRef.current = (comunaIndexRef.current + 1) % MAULE_COMUNAS.length;
+      fetchWeatherForComuna(comunaIndexRef.current);
+    }, 20000);
+    return () => clearInterval(interval);
   }, []);
 
   const handleSubmit = async (e: FormEvent) => {
@@ -350,7 +364,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
             ) : null}
           </div>
           <div className="lsp-footer">
-            Fuente: Open-Meteo · Nominatim OSM
+            Fuente: Open-Meteo · Región del Maule
           </div>
         </div>
 
