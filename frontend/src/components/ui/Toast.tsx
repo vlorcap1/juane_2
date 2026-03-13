@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useCallback } from 'react';
 import { Toast, ToastContextType, ToastType } from '../../types/ui';
 import { generateUUID } from '../../utils/security';
 import './Toast.css';
+import { Check, X, AlertTriangle, Info } from 'lucide-react';
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
@@ -74,11 +75,11 @@ interface ToastItemProps {
 const ToastItem: React.FC<ToastItemProps> = ({ toast, onRemove }) => {
   const getIcon = () => {
     switch (toast.type) {
-      case 'success': return '✓';
-      case 'error': return '✕';
-      case 'warning': return '⚠';
-      case 'info': return 'ℹ';
-      default: return '';
+      case 'success': return <Check size={14} />;
+      case 'error': return <X size={14} />;
+      case 'warning': return <AlertTriangle size={14} />;
+      case 'info': return <Info size={14} />;
+      default: return null;
     }
   };
 

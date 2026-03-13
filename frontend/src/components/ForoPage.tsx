@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { MessageSquare, Trash2, User, Calendar, Zap } from 'lucide-react';
 import apiClient from '../api/client';
 import { Modal } from './ui/Modal';
 import './ForoPage.css';
@@ -12,6 +13,15 @@ interface ForoTema {
   creadoEn: string;
   ultimaActividad: string;
   respuestas: number;
+}
+
+interface ForoPost {
+  id: number;
+  temaId: number;
+  texto: string;
+  autorId: string;
+  autorNombre: string;
+  creadoEn: string;
 }
 
 interface User {
@@ -29,6 +39,12 @@ export const ForoPage: React.FC<ForoPageProps> = ({ user }) => {
   const [temas, setTemas] = useState<ForoTema[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showTemaModal, setShowTemaModal] = useState(false);
+  const [selectedTema, setSelectedTema] = useState<ForoTema | null>(null);
+  const [temaPosts, setTemaPosts] = useState<ForoPost[]>([]);
+  const [temaLoading, setTemaLoading] = useState(false);
+  const [nuevoPost, setNuevoPost] = useState('');
+  const [sendingPost, setSendingPost] = useState(false);
   const [nuevoTema, setNuevoTema] = useState({
     titulo: '',
     cuerpo: ''
@@ -78,6 +94,60 @@ export const ForoPage: React.FC<ForoPageProps> = ({ user }) => {
     }
   };
 
+  const handleOpenTema = async (tema: ForoTema) => {
+    setSelectedTema(tema);
+    setShowTemaModal(true);
+    setTemaLoading(true);
+    setTemaPosts([]);
+    try {
+      const response = await apiClient.get(`/api/foro/temas/${tema.id}/posts`);
+      setTemaPosts(response.data.posts || []);
+      if (response.data.tema) {
+        setSelectedTema({ ...tema, ...response.data.tema });
+      }
+    } catch (error) {
+      console.error('Error cargando conversación del tema:', error);
+      alert('Error al cargar la conversación del tema');
+    } finally {
+      setTemaLoading(false);
+    }
+  };
+
+  const handleCreatePost = async () => {
+    if (!selectedTema) return;
+    if (!nuevoPost.trim()) {
+      alert('Escribe un mensaje antes de responder');
+      return;
+    }
+
+    setSendingPost(true);
+    try {
+      await apiClient.post(`/api/foro/temas/${selectedTema.id}/posts`, { texto: nuevoPost.trim() });
+      setNuevoPost('');
+      await handleOpenTema(selectedTema);
+      await loadTemas();
+    } catch (error) {
+      console.error('Error publicando respuesta:', error);
+      alert('Error al publicar respuesta');
+    } finally {
+      setSendingPost(false);
+    }
+  };
+
+  const handleDeletePost = async (postId: number) => {
+    if (!selectedTema) return;
+    if (!window.confirm('¿Eliminar esta respuesta?')) return;
+
+    try {
+      await apiClient.delete(`/api/foro/posts/${postId}`);
+      await handleOpenTema(selectedTema);
+      await loadTemas();
+    } catch (error) {
+      console.error('Error eliminando respuesta:', error);
+      alert('Error al eliminar respuesta');
+    }
+  };
+
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('es-CL', {
@@ -102,7 +172,7 @@ export const ForoPage: React.FC<ForoPageProps> = ({ user }) => {
       {/* Header */}
       <div className="foro-header">
         <div>
-          <div className="section-title">💬 Foro Interno</div>
+          <div className="section-title"><MessageSquare size={18} /> Foro Interno</div>
           <div style={{ fontSize: '11px', color: 'var(--text3)', marginTop: '4px' }}>
             Comunícate y resuelve consultas con @menciones
           </div>
@@ -120,29 +190,32 @@ export const ForoPage: React.FC<ForoPageProps> = ({ user }) => {
           </div>
         ) : (
           temas.map((tema) => (
-            <div key={tema.id} className="tema-card">
+            <div key={tema.id} className="tema-card tema-card-clickable" onClick={() => handleOpenTema(tema)}>
               <div className="tema-header">
                 <div className="tema-title">{tema.titulo}</div>
                 {(user.id === tema.autorId || user.rol === 'admin') && (
                   <button 
-                    className="btn-icon" 
-                    onClick={() => handleDeleteTema(tema.id)}
+                    className="btn-icon"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteTema(tema.id);
+                    }}
                     title="Eliminar"
                   >
-                    🗑️
+                    <Trash2 size={14} />
                   </button>
                 )}
               </div>
               <div className="tema-meta">
                 <span className="tema-author">
-                  👤 {tema.autorNombre || 'Anónimo'}
+                  <User size={13} /> {tema.autorNombre || 'Anónimo'}
                 </span>
                 <span className="tema-date">
-                  📅 {formatDate(tema.creadoEn)}
+                  <Calendar size={13} /> {formatDate(tema.creadoEn)}
                 </span>
                 {tema.ultimaActividad !== tema.creadoEn && (
                   <span className="tema-activity">
-                    ⚡ última actividad {formatDate(tema.ultimaActividad)}
+                    <Zap size={13} /> última actividad {formatDate(tema.ultimaActividad)}
                   </span>
                 )}
               </div>
@@ -151,7 +224,7 @@ export const ForoPage: React.FC<ForoPageProps> = ({ user }) => {
               </div>
               <div className="tema-footer">
                 <span className="tema-respuestas">
-                  💬 {tema.respuestas} respuesta{tema.respuestas !== 1 ? 's' : ''}
+                  <MessageSquare size={13} /> {tema.respuestas} respuesta{tema.respuestas !== 1 ? 's' : ''}
                 </span>
               </div>
             </div>
@@ -163,7 +236,7 @@ export const ForoPage: React.FC<ForoPageProps> = ({ user }) => {
       <Modal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        title="💬 Nuevo Tema"
+        title="Nuevo Tema"
         size="md"
         footer={
           <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
@@ -196,6 +269,75 @@ export const ForoPage: React.FC<ForoPageProps> = ({ user }) => {
             />
           </div>
         </div>
+      </Modal>
+
+      <Modal
+        isOpen={showTemaModal}
+        onClose={() => {
+          setShowTemaModal(false);
+          setSelectedTema(null);
+          setTemaPosts([]);
+          setNuevoPost('');
+        }}
+        title={selectedTema ? `Tema: ${selectedTema.titulo}` : 'Conversación'}
+        size="lg"
+        footer={
+          <div className="foro-chat-footer">
+            <textarea
+              className="form-textarea foro-reply-input"
+              placeholder="Escribe tu respuesta... (puedes mencionar con @usuario)"
+              value={nuevoPost}
+              onChange={(e) => setNuevoPost(e.target.value)}
+              rows={3}
+            />
+            <div className="foro-chat-footer-actions">
+              <button className="btn btn-secondary" onClick={() => setShowTemaModal(false)}>
+                Cerrar
+              </button>
+              <button className="btn btn-primary" onClick={handleCreatePost} disabled={sendingPost || !nuevoPost.trim()}>
+                {sendingPost ? 'Publicando...' : 'Responder'}
+              </button>
+            </div>
+          </div>
+        }
+      >
+        {temaLoading ? (
+          <div className="foro-chat-loading">Cargando conversación...</div>
+        ) : selectedTema ? (
+          <div className="foro-chat-content">
+            <div className="foro-tema-op">
+              <div className="foro-tema-op-titulo">{selectedTema.titulo}</div>
+              <div className="foro-tema-op-cuerpo">{selectedTema.cuerpo}</div>
+              <div className="foro-tema-op-meta">
+                <span><User size={13} /> {selectedTema.autorNombre || 'Anónimo'}</span>
+                <span><Calendar size={13} /> {formatDate(selectedTema.creadoEn)}</span>
+              </div>
+            </div>
+
+            <div className="foro-sep">Respuestas ({temaPosts.length})</div>
+
+            {temaPosts.length === 0 ? (
+              <div className="foro-chat-empty">Aún no hay respuestas en este tema.</div>
+            ) : (
+              temaPosts.map((post) => (
+                <div key={post.id} className="foro-post-card">
+                  <div className="foro-post-header">
+                    <div className="foro-post-autor">{post.autorNombre || 'Anónimo'}</div>
+                    <div className="foro-post-actions">
+                      <div className="foro-post-fecha">{formatDate(post.creadoEn)}</div>
+                      {(user.id === post.autorId || user.rol === 'admin') && (
+                        <button className="foro-post-delete" onClick={() => handleDeletePost(post.id)}>
+                          Eliminar
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <div className="foro-post-texto">{post.texto}</div>
+                </div>
+              ))
+            )}
+          </div>
+        ) : null}
       </Modal>
     </div>
   );

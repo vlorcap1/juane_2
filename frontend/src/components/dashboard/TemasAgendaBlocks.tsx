@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Lightbulb, Calendar, MapPin, AlertTriangle, X } from 'lucide-react';
 import './TemasAgendaBlocks.css';
 
 const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -41,7 +42,7 @@ export const TemasBlock: React.FC<TemasBlockProps> = ({ data, limit = 10 }) => {
             className="item-icon"
             style={{ background: `${t.color}22`, color: t.color, fontSize: '11px' }}
           >
-            💡
+            <Lightbulb size={14} />
           </div>
           <div className="item-content">
             <div className="item-title">{t.tema}</div>
@@ -215,13 +216,13 @@ export const AgendaCalendar: React.FC<{ data: any[] }> = ({ data }) => {
         <div className="cal-day-panel">
           <div className="cal-day-panel-header">
             <div className="cal-day-panel-title">
-              <span>📅</span>
+              <span><Calendar size={14} /></span>
               <span>{fmtDayFull(selectedDay)}</span>
               {hasConflict && (
-                <span className="cal-conflict-badge">⚠ {selectedEvents.length} eventos — posible tope</span>
+                <span className="cal-conflict-badge"><AlertTriangle size={12} /> {selectedEvents.length} eventos — posible tope</span>
               )}
             </div>
-            <button className="cal-panel-close" onClick={() => setSelectedDay(null)}>✕</button>
+            <button className="cal-panel-close" onClick={() => setSelectedDay(null)}><X size={14} /></button>
           </div>
           <div className="cal-day-panel-body">
             {sortedSelectedEvents.map((e, i) => {
@@ -238,11 +239,11 @@ export const AgendaCalendar: React.FC<{ data: any[] }> = ({ data }) => {
                     <div className="cal-day-event-meta">
                       {e.seremi && <span className="cal-tag">{e.seremi}</span>}
                       {e.cat && <span className="cal-tag">{e.cat}</span>}
-                      {e.lugar && <span className="cal-tag cal-tag--lugar">📍 {e.lugar}</span>}
+                      {e.lugar && <span className="cal-tag cal-tag--lugar"><MapPin size={11} /> {e.lugar}</span>}
                     </div>
                     {e.notas && <div className="cal-day-event-notas">{e.notas}</div>}
                     {topsWithPrev && (
-                      <div className="cal-tope-warn">⚠ Mismo horario que el evento anterior</div>
+                      <div className="cal-tope-warn"><AlertTriangle size={12} /> Mismo horario que el evento anterior</div>
                     )}
                   </div>
                 </div>

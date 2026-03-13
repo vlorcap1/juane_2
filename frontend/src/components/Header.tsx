@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Sun, Moon, MessageSquare } from 'lucide-react';
 import { notificacionesApi } from '../api/client';
 import { Notificacion } from '../types';
 import AlertasPanel from './AlertasPanel';
@@ -66,7 +67,9 @@ const Header: React.FC<HeaderProps> = ({ user, currentPeriod, onLogout }) => {
   return (
     <header>
       <div className="header-left">
-        <div className="logo-badge">DP</div>
+        <div className="logo-badge">
+          <img src="/logo.png" alt="Logo Delegacion Presidencial del Maule" />
+        </div>
         <div>
           <div className="header-title">Delegación Presidencial del Maule</div>
           <div className="header-sub">Sistema de Reportería Sectorial · Gobierno Regional</div>
@@ -79,7 +82,7 @@ const Header: React.FC<HeaderProps> = ({ user, currentPeriod, onLogout }) => {
           onClick={toggleTheme}
           title={theme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
         >
-          {theme === 'dark' ? '☀️' : '🌙'}
+          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
         </button>
         
         {/* Alertas del sistema - Rojo/Naranja */}
@@ -90,7 +93,7 @@ const Header: React.FC<HeaderProps> = ({ user, currentPeriod, onLogout }) => {
         {/* Notificaciones de usuario - Azul */}
         <div style={{ position: 'relative' }} ref={notifRef}>
           <div className="notif-btn" onClick={toggleNotifPanel} title="Notificaciones personales">
-            💬
+            <MessageSquare size={18} />
             {unreadCount > 0 && (
               <div className="notif-badge">{unreadCount}</div>
             )}

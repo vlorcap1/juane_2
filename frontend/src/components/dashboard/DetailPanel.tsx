@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { proyectosApi, nudosApi, temasApi, agendaApi, prensaApi, visitasApi } from '../../api/client';
+import { Download, Pin, MapPin, AlertTriangle, Lightbulb } from 'lucide-react';
 import './DetailPanel.css';
 
 interface DetailPanelProps {
@@ -89,10 +90,10 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           {onExportPDF && (
-            <button className="btn-sm dl" onClick={onExportPDF}>⬇ PDF</button>
+            <button className="btn-sm dl" onClick={onExportPDF}><Download size={13} /> PDF</button>
           )}
           {onExportExcel && (
-            <button className="btn-sm dlx" onClick={onExportExcel}>⬇ XLS</button>
+            <button className="btn-sm dlx" onClick={onExportExcel}><Download size={13} /> XLS</button>
           )}
           <button className="detail-close" onClick={onClose}>×</button>
         </div>
@@ -111,7 +112,7 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
                 ? <div style={{ fontSize: 11, color: 'var(--text3)' }}>Sin proyectos registrados</div>
                 : proyectos.map(p => (
                   <div key={p.id} className="item-row">
-                    <div className="item-icon" style={{ background: 'rgba(58,123,213,.1)', color: 'var(--accent2)' }}>📌</div>
+                    <div className="item-icon" style={{ background: 'rgba(58,123,213,.1)', color: 'var(--accent2)' }}><Pin size={14} /></div>
                     <div className="item-content">
                       <div className="item-title">{p.title || p.nombre || '—'}</div>
                       <div className="item-meta">Meta: {p.meta || '—'}</div>
@@ -138,7 +139,7 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
                         border: '1px solid rgba(46,196,165,.25)',
                         fontWeight: 500,
                       }}>
-                        📍 {comuna}
+                        <MapPin size={11} /> {comuna}
                       </span>
                     ))}
                   </div>
@@ -153,7 +154,7 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
               ? <div style={{ fontSize: 11, color: 'var(--text3)', marginBottom: 13 }}>Sin nudos registrados</div>
               : nudos.map(n => (
                 <div key={n.id} className="nodo">
-                  <div className="nodo-title">⚠ {n.title || n.titulo || '—'} <span style={{ fontSize: 9, opacity: .7 }}>[{n.urgencia || ''}]</span></div>
+                  <div className="nodo-title"><AlertTriangle size={13} /> {n.title || n.titulo || '—'} <span style={{ fontSize: 9, opacity: .7 }}>[{n.urgencia || ''}]</span></div>
                   <div className="nodo-desc">{n.desc || n.descripcion || ''}</div>
                 </div>
               ))
@@ -165,7 +166,7 @@ export const DetailPanel: React.FC<DetailPanelProps> = ({
                   ? <div style={{ fontSize: 11, color: 'var(--text3)' }}>Sin temas registrados</div>
                   : temas.map(t => (
                     <div key={t.id} className="item-row">
-                      <div className="item-icon" style={{ background: 'rgba(232,160,58,.12)', color: 'var(--accent)' }}>💡</div>
+                      <div className="item-icon" style={{ background: 'rgba(232,160,58,.12)', color: 'var(--accent)' }}><Lightbulb size={14} /></div>
                       <div className="item-content">
                         <div className="item-title">{t.tema || '—'}</div>
                         {t.prioridad && <div className="item-meta">Prioridad: {t.prioridad}</div>}

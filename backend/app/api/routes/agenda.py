@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from datetime import datetime
+from datetime import datetime, timedelta
 from app.core.database import get_db
 from app.api.dependencies import get_current_user
 from app.schemas.records import AgendaCreate, AgendaUpdate, AgendaResponse
@@ -12,6 +12,30 @@ from app.models.audit import AuditLog
 import json
 
 router = APIRouter(prefix="/api/agenda", tags=["agenda"])
+
+
+def _validate_seremi_agenda_date(fecha_str: str):
+    """Valida que la fecha de agenda para SEREMI sea al menos hoy + 3 días."""
+    if not fecha_str:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="La fecha de agenda es obligatoria"
+        )
+
+    try:
+        fecha = datetime.strptime(fecha_str[:10], "%Y-%m-%d").date()
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Formato de fecha inválido. Usa YYYY-MM-DD"
+        )
+
+    fecha_minima = (datetime.now().date() + timedelta(days=3))
+    if fecha < fecha_minima:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Los SEREMI solo pueden agendar desde {fecha_minima.isoformat()} en adelante"
+        )
 
 
 @router.get("", response_model=List[AgendaResponse])
@@ -55,6 +79,7 @@ def create_agenda(
 ):
     """Crear un nuevo evento de agenda"""
     if current_user.rol == "seremi" and current_user.seremiId:
+        _validate_seremi_agenda_date(agenda.fecha)
         agenda.seremiId = current_user.seremiId
     
     db_agenda = Agenda(**agenda.model_dump())
@@ -95,6 +120,9 @@ def update_agenda(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Evento de agenda no encontrado"
         )
+
+    if current_user.rol == "seremi" and agenda_update.fecha is not None:
+        _validate_seremi_agenda_date(agenda_update.fecha)
     
     update_data = agenda_update.model_dump(exclude_unset=True)
     for key, value in update_data.items():

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Newspaper, Download, Lightbulb, Calendar } from 'lucide-react';
 import { seremisApi } from '../api/client';
 import { useFilters } from '../context/FilterContext';
 import { useNuevoRegistro } from '../context/NuevoRegistroContext';
@@ -287,10 +288,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
       <div className="section-block" style={{ marginTop: '28px' }}>
         <div className="section-block-header">
           <div className="section-block-title">
-            <span>📰</span> Últimas Apariciones en Prensa
+            <span><Newspaper size={16} /></span> Últimas Apariciones en Prensa
           </div>
           <button className="btn btn-success" onClick={handleExportPrensa}>
-            ⬇ Excel Prensa
+            <Download size={14} /> Excel Prensa
           </button>
         </div>
         <PrensaTable data={filteredData} limit={10} />
@@ -301,7 +302,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
         <div className="section-block">
           <div className="section-block-header">
             <div className="section-block-title">
-              <span>💡</span> Propuesta de Temas
+              <span><Lightbulb size={16} /></span> Propuesta de Temas
             </div>
           </div>
           <TemasBlock data={filteredData} limit={10} />
@@ -310,10 +311,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
         <div className="section-block">
           <div className="section-block-header">
             <div className="section-block-title">
-              <span>📅</span> Agenda de Hitos Relevantes
+              <span><Calendar size={16} /></span> Agenda de Hitos Relevantes
             </div>
             <button className="btn btn-warning" onClick={handleExportAgenda}>
-              ⬇ Excel
+              <Download size={14} /> Excel
             </button>
           </div>
           <AgendaCalendar data={filteredData} />

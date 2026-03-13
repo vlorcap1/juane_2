@@ -1,4 +1,5 @@
 import React from 'react';
+import { ClipboardList } from 'lucide-react';
 import { EmptyStateProps } from '../../types/ui';
 import './EmptyState.css';
 
@@ -6,7 +7,7 @@ import './EmptyState.css';
  * Componente para mostrar estados vacíos de manera consistente
  */
 export const EmptyState: React.FC<EmptyStateProps> = ({
-  icon = '📋',
+  icon = <ClipboardList size={32} />,
   title,
   message,
   action

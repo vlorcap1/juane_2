@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { TrendingUp, CheckCircle, AlertTriangle, AlertOctagon, BarChart2, Pencil, Trash2 } from 'lucide-react';
 import './IndicadoresPage.css';
 import { Badge } from './ui/Badge';
 import { LoadingSpinner } from './ui/LoadingSpinner';
@@ -169,7 +170,7 @@ export const IndicadoresPage: React.FC<IndicadoresPageProps> = ({ user: _user })
         await apiClient.post('/api/kpis', payload);
       }
       setShowKPIModal(false);
-      alert('✓ KPI guardado exitosamente');
+      alert('KPI guardado exitosamente');
       loadData();
     } catch (error) {
       console.error('Error al guardar KPI:', error);
@@ -216,7 +217,7 @@ export const IndicadoresPage: React.FC<IndicadoresPageProps> = ({ user: _user })
     <div className="indicadores-page">
       <div className="page-header">
         <div>
-          <h1>📈 Indicadores KPI</h1>
+          <h1><TrendingUp size={20} /> Indicadores KPI</h1>
           <p className="page-subtitle">
             Seguimiento de metas e indicadores por SEREMI
           </p>
@@ -244,28 +245,28 @@ export const IndicadoresPage: React.FC<IndicadoresPageProps> = ({ user: _user })
       {/* KPI Summary Row */}
       <div className="kpi-summary-row">
         <div className="kpi-summary-card">
-          <div className="kpi-summary-icon" style={{ background: 'rgba(46,196,165,.15)' }}>✅</div>
+          <div className="kpi-summary-icon" style={{ background: 'rgba(46,196,165,.15)' }}><CheckCircle size={20} /></div>
           <div>
             <div className="kpi-summary-val" style={{ color: 'var(--accent3)' }}>{stats.cumpliendo}</div>
             <div className="kpi-summary-label">Cumpliendo</div>
           </div>
         </div>
         <div className="kpi-summary-card">
-          <div className="kpi-summary-icon" style={{ background: 'rgba(232,160,58,.15)' }}>⚠️</div>
+          <div className="kpi-summary-icon" style={{ background: 'rgba(232,160,58,.15)' }}><AlertTriangle size={20} /></div>
           <div>
             <div className="kpi-summary-val" style={{ color: 'var(--accent)' }}>{stats.enRiesgo}</div>
             <div className="kpi-summary-label">En Riesgo</div>
           </div>
         </div>
         <div className="kpi-summary-card">
-          <div className="kpi-summary-icon" style={{ background: 'rgba(232,84,84,.15)' }}>🚨</div>
+          <div className="kpi-summary-icon" style={{ background: 'rgba(232,84,84,.15)' }}><AlertOctagon size={20} /></div>
           <div>
             <div className="kpi-summary-val" style={{ color: '#e85454' }}>{stats.criticos}</div>
             <div className="kpi-summary-label">Críticos</div>
           </div>
         </div>
         <div className="kpi-summary-card">
-          <div className="kpi-summary-icon" style={{ background: 'rgba(58,123,213,.15)' }}>📊</div>
+          <div className="kpi-summary-icon" style={{ background: 'rgba(58,123,213,.15)' }}><BarChart2 size={20} /></div>
           <div>
             <div className="kpi-summary-val">{stats.totalKPIs}</div>
             <div className="kpi-summary-label">Total KPIs</div>
@@ -275,7 +276,7 @@ export const IndicadoresPage: React.FC<IndicadoresPageProps> = ({ user: _user })
 
       {/* KPI Table */}
       {filteredKPIs.length === 0 ? (
-        <EmptyState icon="📊" title="Sin indicadores" message="Comienza agregando tu primer KPI" />
+        <EmptyState icon={<BarChart2 size={32} />} title="Sin indicadores" message="Comienza agregando tu primer KPI" />
       ) : (
         <div className="table-wrap">
           <table className="prensa-table">
@@ -303,15 +304,15 @@ export const IndicadoresPage: React.FC<IndicadoresPageProps> = ({ user: _user })
                     <td><strong>{progreso}%</strong></td>
                     <td>
                       <Badge variant={estado === 'verde' ? 'success' : estado === 'amarillo' ? 'warning' : 'danger'}>
-                        {estado === 'verde' ? '✅ Cumpliendo' : estado === 'amarillo' ? '⚠️ En Riesgo' : '🚨 Crítico'}
+                        {estado === 'verde' ? 'Cumpliendo' : estado === 'amarillo' ? 'En Riesgo' : 'Crítico'}
                       </Badge>
                     </td>
                     <td>{kpi.categoria || kpi.periodo || '-'}</td>
                     <td>{kpi.unidad}</td>
                     <td>
-                      <button className="btn-icon" title="Editar" onClick={() => handleEditKPI(kpi)}>✏️</button>
+                      <button className="btn-icon" title="Editar" onClick={() => handleEditKPI(kpi)}><Pencil size={14} /></button>
                       {isAdmin && (
-                        <button className="btn-icon" title="Eliminar" onClick={() => handleDeleteKPI(kpi.id!)}>🗑️</button>
+                        <button className="btn-icon" title="Eliminar" onClick={() => handleDeleteKPI(kpi.id!)}><Trash2 size={14} /></button>
                       )}
                     </td>
                   </tr>

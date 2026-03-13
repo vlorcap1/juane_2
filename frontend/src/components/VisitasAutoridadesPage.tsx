@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import apiClient from '../api/client';
 import { Modal } from './ui/Modal';
+import { Award, BarChart2, Briefcase, ClipboardList, Target, User, Download, Pencil, Trash2, Paperclip, Eye, Image, FileText, Folder, Calendar, Users, CheckCircle, Newspaper, X } from 'lucide-react';
 import './VisitasAutoridadesPage.css';
 
 interface VisitaAutoridad {
@@ -317,28 +318,28 @@ export default function VisitasAutoridadesPage() {
     return (
       <div className="stats-grid">
         <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'rgba(58,123,213,.15)' }}>📊</div>
+          <div className="stat-icon" style={{ background: 'rgba(58,123,213,.15)' }}><BarChart2 size={20} /></div>
           <div>
             <div className="stat-val">{total}</div>
             <div className="stat-label">Total visitas</div>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'rgba(232,84,84,.15)' }}>👔</div>
+          <div className="stat-icon" style={{ background: 'rgba(232,84,84,.15)' }}><Briefcase size={20} /></div>
           <div>
             <div className="stat-val" style={{ color: '#e85454' }}>{ministros}</div>
             <div className="stat-label">Ministros</div>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'rgba(232,160,58,.15)' }}>📋</div>
+          <div className="stat-icon" style={{ background: 'rgba(232,160,58,.15)' }}><ClipboardList size={20} /></div>
           <div>
             <div className="stat-val" style={{ color: 'var(--accent)' }}>{subsecretarios}</div>
             <div className="stat-label">Subsecretarios</div>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'rgba(46,196,165,.12)' }}>🎯</div>
+          <div className="stat-icon" style={{ background: 'rgba(46,196,165,.12)' }}><Target size={20} /></div>
           <div>
             <div className="stat-val" style={{ color: 'var(--accent3)' }}>{directores}</div>
             <div className="stat-label">Directores</div>
@@ -350,10 +351,10 @@ export default function VisitasAutoridadesPage() {
 
   const getTipoIcon = (tipo: string) => {
     switch (tipo) {
-      case 'ministro': return '👔';
-      case 'subsecretario': return '📋';
-      case 'director_nacional': return '🎯';
-      default: return '👤';
+      case 'ministro': return <Briefcase size={15} />;
+      case 'subsecretario': return <ClipboardList size={15} />;
+      case 'director_nacional': return <Target size={15} />;
+      default: return <User size={15} />;
     }
   };
 
@@ -380,13 +381,13 @@ export default function VisitasAutoridadesPage() {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <div className="section-title">🎖️ Visitas de Autoridades Nacionales</div>
+          <div className="section-title"><Award size={18} /> Visitas de Autoridades Nacionales</div>
           <div style={{ fontSize: '11px', color: 'var(--text3)', marginTop: '4px' }}>
             Registro de visitas de Ministros, Subsecretarios y Directores Nacionales a la región
           </div>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
-          <button className="btn btn-success" onClick={exportToExcel}>⬇ Excel</button>
+          <button className="btn btn-success" onClick={exportToExcel}><Download size={14} /> Excel</button>
           <button className="btn btn-primary" onClick={handleOpenModal}>+ Nueva Visita</button>
         </div>
       </div>
@@ -407,19 +408,19 @@ export default function VisitasAutoridadesPage() {
             className={`f-chip ${filtroTipo === 'ministro' ? 'active' : ''}`}
             onClick={() => setFiltroTipo('ministro')}
           >
-            👔 Ministros
+            <Briefcase size={13} /> Ministros
           </div>
           <div 
             className={`f-chip ${filtroTipo === 'subsecretario' ? 'active' : ''}`}
             onClick={() => setFiltroTipo('subsecretario')}
           >
-            📋 Subsecretarios
+            <ClipboardList size={13} /> Subsecretarios
           </div>
           <div 
             className={`f-chip ${filtroTipo === 'director_nacional' ? 'active' : ''}`}
             onClick={() => setFiltroTipo('director_nacional')}
           >
-            🎯 Directores
+            <Target size={13} /> Directores
           </div>
         </div>
       </div>
@@ -428,7 +429,7 @@ export default function VisitasAutoridadesPage() {
       <div className="table-wrap">
         <div className="table-head-bar">
           <div className="table-head-title">
-            🎖️ Visitas de Autoridades
+            <Award size={15} /> Visitas de Autoridades
             <span className="table-count">{filteredVisitas.length} registro{filteredVisitas.length !== 1 ? 's' : ''}</span>
           </div>
         </div>
@@ -476,13 +477,13 @@ export default function VisitasAutoridadesPage() {
                     <td>{visita.seremiNombre || '-'}</td>
                     <td>
                       <span className="badge" style={{ background: 'var(--accent3)', color: '#fff' }}>
-                        {visita.numArchivos || 0} 📎
+                        {visita.numArchivos || 0} <Paperclip size={12} />
                       </span>
                     </td>
                     <td onClick={(e) => e.stopPropagation()}>
-                      <button className="btn-icon" title="Editar" onClick={() => handleEditVisita(visita)}>✏️</button>
+                      <button className="btn-icon" title="Editar" onClick={() => handleEditVisita(visita)}><Pencil size={13} /></button>
                       {user?.rol === 'admin' && (
-                        <button className="btn-icon" title="Eliminar" onClick={() => handleDeleteVisita(visita.id!)}>🗑️</button>
+                        <button className="btn-icon" title="Eliminar" onClick={() => handleDeleteVisita(visita.id!)}><Trash2 size={13} /></button>
                       )}
                     </td>
                   </tr>
@@ -497,7 +498,7 @@ export default function VisitasAutoridadesPage() {
       <Modal
         isOpen={showDetail}
         onClose={() => setShowDetail(false)}
-        title={detailVisita ? `${getTipoIcon(detailVisita.tipoAutoridad)} ${detailVisita.nombre}` : ''}
+        title={detailVisita ? detailVisita.nombre : ''}
         size="lg"
       >
         {detailVisita && (
@@ -532,38 +533,38 @@ export default function VisitasAutoridadesPage() {
 
             {detailVisita.agenda && (
               <div className="detail-section">
-                <div className="detail-section-title">📅 Agenda de la Visita</div>
+                <div className="detail-section-title"><Calendar size={14} /> Agenda de la Visita</div>
                 <p className="detail-text">{detailVisita.agenda}</p>
               </div>
             )}
             {detailVisita.acompanantes && (
               <div className="detail-section">
-                <div className="detail-section-title">👥 Acompañantes</div>
+                <div className="detail-section-title"><Users size={14} /> Acompañantes</div>
                 <p className="detail-text">{detailVisita.acompanantes}</p>
               </div>
             )}
             {detailVisita.objetivos && (
               <div className="detail-section">
-                <div className="detail-section-title">🎯 Objetivos de la Visita</div>
+                <div className="detail-section-title"><Target size={14} /> Objetivos de la Visita</div>
                 <p className="detail-text">{detailVisita.objetivos}</p>
               </div>
             )}
             {detailVisita.resultados && (
               <div className="detail-section">
-                <div className="detail-section-title">✅ Resultados / Compromisos</div>
+                <div className="detail-section-title"><CheckCircle size={14} /> Resultados / Compromisos</div>
                 <p className="detail-text">{detailVisita.resultados}</p>
               </div>
             )}
             {detailVisita.impactoMedios && (
               <div className="detail-section">
-                <div className="detail-section-title">📰 Impacto en Medios</div>
+                <div className="detail-section-title"><Newspaper size={14} /> Impacto en Medios</div>
                 <p className="detail-text">{detailVisita.impactoMedios}</p>
               </div>
             )}
 
             {/* Archivos adjuntos */}
             <div className="detail-section">
-              <div className="detail-section-title">📎 Archivos Adjuntos</div>
+              <div className="detail-section-title"><Paperclip size={14} /> Archivos Adjuntos</div>
               {loadingArchivos ? (
                 <p style={{ color: 'var(--text3)', fontSize: '13px' }}>Cargando archivos...</p>
               ) : detailArchivos.length === 0 ? (
@@ -577,7 +578,7 @@ export default function VisitasAutoridadesPage() {
                       borderRadius: '10px', border: '1px solid var(--border)'
                     }}>
                       <span style={{ fontSize: '22px' }}>
-                        {arch.tipo?.includes('image') ? '🖼️' : arch.tipo?.includes('pdf') ? '📕' : arch.tipo?.includes('sheet') || arch.tipo?.includes('excel') ? '📗' : '📄'}
+                        {arch.tipo?.includes('image') ? <Image size={20} /> : <FileText size={20} />}
                       </span>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -597,7 +598,7 @@ export default function VisitasAutoridadesPage() {
                             title="Ver"
                             onClick={() => handleDownloadFile(arch, true)}
                           >
-                            👁 Ver
+                            <Eye size={12} /> Ver
                           </button>
                         )}
                         <button
@@ -606,7 +607,7 @@ export default function VisitasAutoridadesPage() {
                           title="Descargar"
                           onClick={() => handleDownloadFile(arch, false)}
                         >
-                          ⬇ Descargar
+                          <Download size={12} /> Descargar
                         </button>
                       </div>
                     </div>
@@ -619,7 +620,7 @@ export default function VisitasAutoridadesPage() {
             <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', borderTop: '1px solid var(--border)', paddingTop: '16px' }}>
               <button className="btn-cancel" onClick={() => setShowDetail(false)}>Cerrar</button>
               <button className="btn btn-primary" onClick={() => { setShowDetail(false); handleEditVisita(detailVisita); }}>
-                ✏️ Editar
+                <Pencil size={13} /> Editar
               </button>
             </div>
           </div>
@@ -674,9 +675,9 @@ export default function VisitasAutoridadesPage() {
                     required
                   >
                     <option value="">Seleccionar...</option>
-                    <option value="ministro">👔 Ministro</option>
-                    <option value="subsecretario">📋 Subsecretario</option>
-                    <option value="director_nacional">🎯 Director Nacional</option>
+                    <option value="ministro">Ministro</option>
+                    <option value="subsecretario">Subsecretario</option>
+                    <option value="director_nacional">Director Nacional</option>
                   </select>
                 </div>
                 <div className="form-group">
@@ -787,7 +788,7 @@ export default function VisitasAutoridadesPage() {
               {/* Archivos adjuntos */}
               <div style={{ marginTop: '24px', paddingTop: '20px', borderTop: '1px solid var(--border)' }}>
                 <label style={{ display: 'block', marginBottom: '12px', fontWeight: 600, color: 'var(--text)' }}>
-                  📎 Archivos Adjuntos (Agenda, propuestas, fotos, etc.)
+                  <Paperclip size={14} /> Archivos Adjuntos (Agenda, propuestas, fotos, etc.)
                 </label>
                 <div 
                   style={{ 
@@ -804,7 +805,7 @@ export default function VisitasAutoridadesPage() {
                   onDragLeave={handleDragLeave}
                   onClick={handleFileSelect}
                 >
-                  <div style={{ fontSize: '32px', marginBottom: '8px' }}>📁</div>
+                  <div style={{ fontSize: '32px', marginBottom: '8px' }}><Folder size={32} /></div>
                   <div style={{ fontSize: '13px', color: 'var(--text2)', marginBottom: '4px' }}>
                     Arrastra archivos aquí o haz clic para seleccionar
                   </div>
@@ -832,7 +833,7 @@ export default function VisitasAutoridadesPage() {
                         background: 'var(--bg3)', 
                         borderRadius: '8px' 
                       }}>
-                        <div style={{ fontSize: '20px' }}>📄</div>
+                        <div style={{ fontSize: '20px' }}><FileText size={20} /></div>
                         <div style={{ flex: 1 }}>
                           <div style={{ fontSize: '12px', fontWeight: 500, color: 'var(--text)' }}>{file.name}</div>
                           <div style={{ fontSize: '10px', color: 'var(--text3)', marginTop: '2px' }}>
@@ -844,7 +845,7 @@ export default function VisitasAutoridadesPage() {
                           onClick={(e) => { e.stopPropagation(); removeFile(i); }}
                           title="Quitar"
                         >
-                          ✕
+                          <X size={13} />
                         </button>
                       </div>
                     ))}

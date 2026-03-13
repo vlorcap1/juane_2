@@ -1,4 +1,5 @@
 import React from 'react';
+import { Download } from 'lucide-react';
 import './ExportBar.css';
 
 interface ExportBarProps {
@@ -21,13 +22,13 @@ export const ExportBar: React.FC<ExportBarProps> = ({
         className="btn btn-danger2"
         onClick={onExportPDF}
       >
-        ⬇ PDF Global
+        <Download size={14} /> PDF Global
       </button>
       <button 
         className="btn btn-success"
         onClick={onExportExcel}
       >
-        ⬇ Excel Completo
+        <Download size={14} /> Excel Completo
       </button>
       {showNuevoRegistro && (
         <>

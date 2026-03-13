@@ -1,9 +1,10 @@
+import { Leaf } from 'lucide-react';
 import './SEIAProyectosPage.css';
 
 export default function SEIAProyectosPage() {
   return (
     <div className="container">
-      <div className="section-title">🌿 Sistema de Evaluación de Impacto Ambiental</div>
+      <div className="section-title"><Leaf size={16} /> Sistema de Evaluación de Impacto Ambiental</div>
       <div style={{ fontSize: '11px', color: 'var(--text3)', marginBottom: '16px' }}>
         Búsqueda de proyectos ingresados al SEIA - Servicio de Evaluación Ambiental
       </div>

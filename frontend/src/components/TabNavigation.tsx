@@ -1,4 +1,5 @@
 import React from 'react';
+import { BarChart2, Award, ClipboardList, Users, MessageSquare, Leaf, Newspaper } from 'lucide-react';
 
 interface TabNavigationProps {
   user: any;
@@ -14,49 +15,43 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({ user, activeTab, o
           className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
           onClick={() => onTabChange('dashboard')}
         >
-          📊 Dashboard
+          <BarChart2 size={15} /> Dashboard
         </button>
         <button
           className={`tab-btn ${activeTab === 'autoridades' ? 'active' : ''}`}
           onClick={() => onTabChange('autoridades')}
         >
-          🎖️ Visitas Autoridades
+          <Award size={15} /> Visitas Autoridades
         </button>
         <button
           className={`tab-btn ${activeTab === 'contrataciones' ? 'active' : ''}`}
           onClick={() => onTabChange('contrataciones')}
         >
-          📋 Contrataciones
+          <ClipboardList size={15} /> Contrataciones
         </button>
         <button
           className={`tab-btn ${activeTab === 'usuarios' ? 'active' : ''}`}
           onClick={() => onTabChange('usuarios')}
         >
-          👥 Usuarios y SEREMIs
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'kpis' ? 'active' : ''}`}
-          onClick={() => onTabChange('kpis')}
-        >
-          📈 KPIs / Indicadores
+          <Users size={15} /> Usuarios y SEREMIs
         </button>
         <button
           className={`tab-btn ${activeTab === 'foro' ? 'active' : ''}`}
           onClick={() => onTabChange('foro')}
         >
-          💬 Foro
+          <MessageSquare size={15} /> Foro
         </button>
         <button
           className={`tab-btn ${activeTab === 'seia' ? 'active' : ''}`}
           onClick={() => onTabChange('seia')}
         >
-          🌿 SEIA Proyectos
+          <Leaf size={15} /> SEIA Proyectos
         </button>
         <button
           className={`tab-btn ${activeTab === 'noticias' ? 'active' : ''}`}
           onClick={() => onTabChange('noticias')}
         >
-          📰 Noticias RSS
+          <Newspaper size={15} /> Noticias RSS
         </button>
       </div>
     );
@@ -67,43 +62,37 @@ export const TabNavigation: React.FC<TabNavigationProps> = ({ user, activeTab, o
           className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
           onClick={() => onTabChange('dashboard')}
         >
-          📊 Dashboard
+          <BarChart2 size={15} /> Dashboard
         </button>
         <button
           className={`tab-btn ${activeTab === 'miseremi' ? 'active' : ''}`}
           onClick={() => onTabChange('miseremi')}
         >
-          📋 Mi SEREMI
+          <ClipboardList size={15} /> Mi SEREMI
         </button>
         <button
           className={`tab-btn ${activeTab === 'autoridades' ? 'active' : ''}`}
           onClick={() => onTabChange('autoridades')}
         >
-          🎖️ Visitas Autoridades
-        </button>
-        <button
-          className={`tab-btn ${activeTab === 'kpis' ? 'active' : ''}`}
-          onClick={() => onTabChange('kpis')}
-        >
-          📈 Mis KPIs
+          <Award size={15} /> Visitas Autoridades
         </button>
         <button
           className={`tab-btn ${activeTab === 'contrataciones' ? 'active' : ''}`}
           onClick={() => onTabChange('contrataciones')}
         >
-          📋 Mis Contrataciones
+          <ClipboardList size={15} /> Mis Contrataciones
         </button>
         <button
           className={`tab-btn ${activeTab === 'foro' ? 'active' : ''}`}
           onClick={() => onTabChange('foro')}
         >
-          💬 Foro
+          <MessageSquare size={15} /> Foro
         </button>
         <button
           className={`tab-btn ${activeTab === 'seia' ? 'active' : ''}`}
           onClick={() => onTabChange('seia')}
         >
-          🌿 SEIA Proyectos
+          <Leaf size={15} /> SEIA Proyectos
         </button>
       </div>
     );

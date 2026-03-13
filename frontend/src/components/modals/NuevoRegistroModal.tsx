@@ -3,15 +3,16 @@ import { Modal } from '../ui/Modal';
 import { useNuevoRegistro } from '../../context/NuevoRegistroContext';
 import { seremisApi, visitasApi, contactosApi, prensaApi, proyectosApi, nudosApi, temasApi, agendaApi } from '../../api/client';
 import './NuevoRegistroModal.css';
+import { MapPin, Users, Newspaper, Pin, AlertTriangle, Lightbulb, Calendar, ThumbsUp, Minus, ThumbsDown, AlertOctagon, CheckCircle } from 'lucide-react';
 
 const RECORD_TYPES = [
-  { key: 'visita',   icon: '🗺️​', label: 'Visita a\nComuna' },
-  { key: 'contacto', icon: '🤝​', label: 'Evento /\nContacto' },
-  { key: 'prensa',   icon: '📰', label: 'Aparición\nPrensa' },
-  { key: 'proyecto', icon: '📌​', label: 'Proyecto' },
-  { key: 'nudo',     icon: '⚠️​', label: 'Nudo\nCrí­tico' },
-  { key: 'tema',     icon: '💡', label: 'Propuesta\nde Tema' },
-  { key: 'agenda',   icon: '📅', label: 'Hito\nAgenda' },
+  { key: 'visita',   icon: <MapPin size={24} />, label: 'Visita a\nComuna' },
+  { key: 'contacto', icon: <Users size={24} />, label: 'Evento /\nContacto' },
+  { key: 'prensa',   icon: <Newspaper size={24} />, label: 'Aparición\nPrensa' },
+  { key: 'proyecto', icon: <Pin size={24} />, label: 'Proyecto' },
+  { key: 'nudo',     icon: <AlertTriangle size={24} />, label: 'Nudo\nCrítico' },
+  { key: 'tema',     icon: <Lightbulb size={24} />, label: 'Propuesta\nde Tema' },
+  { key: 'agenda',   icon: <Calendar size={24} />, label: 'Hito\nAgenda' },
 ];
 
 interface SeremiSimple { id: string; nombre: string; sector: string; }
@@ -211,8 +212,8 @@ export const NuevoRegistroModal: React.FC = () => {
           <div className="form-group">
             <label className="form-label">TONO DE LA NOTA</label>
             <div className="nr-urgencia-group">
-              {[{k:'pos',l:'ðŸ‘ Positivo'},{k:'neu',l:'ðŸ˜ Neutro'},{k:'neg',l:'ðŸ‘Ž Negativo'}].map(t => (
-                <button key={t.k} type="button" className={`nr-urgencia-btn${prensa.tono===t.k?' active':''}`} onClick={() => setP('tono', t.k)}>{t.l}</button>
+              {[{k:'pos',icon:<ThumbsUp size={13}/>,l:'Positivo'},{k:'neu',icon:<Minus size={13}/>,l:'Neutro'},{k:'neg',icon:<ThumbsDown size={13}/>,l:'Negativo'}].map(t => (
+                <button key={t.k} type="button" className={`nr-urgencia-btn${prensa.tono===t.k?' active':''}`} onClick={() => setP('tono', t.k)}>{t.icon} {t.l}</button>
               ))}
             </div>
           </div>
@@ -246,8 +247,8 @@ export const NuevoRegistroModal: React.FC = () => {
           <div className="form-group">
             <label className="form-label">NIVEL DE URGENCIA</label>
             <div className="nr-urgencia-group">
-              {[{k:'Alta',l:'🔴 Alta'},{k:'Media',l:'🟡 Media'},{k:'Baja',l:'🟢 Baja'}].map(u => (
-                <button key={u.k} type="button" className={`nr-urgencia-btn${nudo.urgencia===u.k?' active':''}`} onClick={() => setN('urgencia', u.k)}>{u.l}</button>
+              {[{k:'Alta',icon:<AlertOctagon size={13}/>,l:'Alta'},{k:'Media',icon:<AlertTriangle size={13}/>,l:'Media'},{k:'Baja',icon:<CheckCircle size={13}/>,l:'Baja'}].map(u => (
+                <button key={u.k} type="button" className={`nr-urgencia-btn${nudo.urgencia===u.k?' active':''}`} onClick={() => setN('urgencia', u.k)}>{u.icon} {u.l}</button>
               ))}
             </div>
           </div>

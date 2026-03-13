@@ -1,4 +1,8 @@
 import React, { useState, FormEvent, useEffect } from 'react';
+import {
+  Sun, CloudSun, Cloud, CloudFog, CloudDrizzle, CloudRain, CloudSnow, CloudLightning,
+  Newspaper, Thermometer, MapPin, Droplets, Wind,
+} from 'lucide-react';
 import { authApi } from '../api/client';
 
 interface LoginProps {
@@ -34,15 +38,16 @@ interface WeatherData {
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 // ── Weather helpers ──────────────────────────────────────────
-function weatherIcon(code: number): string {
-  if (code === 0) return '☀️';
-  if (code <= 3) return code === 1 ? '🌤️' : code === 2 ? '⛅' : '☁️';
-  if (code <= 48) return '🌫️';
-  if (code <= 55) return '🌦️';
-  if (code <= 65) return '🌧️';
-  if (code <= 75) return '❄️';
-  if (code <= 82) return '🌧️';
-  return '⛈️';
+function weatherIcon(code: number): JSX.Element {
+  if (code === 0) return <Sun size={28} />;
+  if (code === 1 || code === 2) return <CloudSun size={28} />;
+  if (code === 3) return <Cloud size={28} />;
+  if (code <= 48) return <CloudFog size={28} />;
+  if (code <= 55) return <CloudDrizzle size={28} />;
+  if (code <= 65) return <CloudRain size={28} />;
+  if (code <= 75) return <CloudSnow size={28} />;
+  if (code <= 82) return <CloudRain size={28} />;
+  return <CloudLightning size={28} />;
 }
 
 function weatherDesc(code: number): string {
@@ -224,7 +229,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         {/* ── LEFT: News ────────────────────────────── */}
         <div className="login-side-panel login-news-panel">
           <div className="lsp-header">
-            <span className="lsp-icon">📰</span>
+            <span className="lsp-icon"><Newspaper size={18} /></span>
             <span className="lsp-title">Noticias Recientes</span>
           </div>
           <div className="lsp-body">
@@ -257,7 +262,9 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         {/* ── CENTER: Login form ─────────────────────── */}
         <div className="login-box">
           <div className="login-top">
-            <div className="login-logo">M</div>
+            <div className="login-logo">
+              <img src="/logo.png" alt="Logo Delegacion Presidencial del Maule" />
+            </div>
             <div className="login-title">Delegación Presidencial del Maule</div>
             <div className="login-sub">Sistema de Reportes Sectorial · Gobernación Regional</div>
           </div>
@@ -300,7 +307,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         {/* ── RIGHT: Weather ────────────────────────── */}
         <div className="login-side-panel login-weather-panel">
           <div className="lsp-header">
-            <span className="lsp-icon">🌡️</span>
+            <span className="lsp-icon"><Thermometer size={18} /></span>
             <span className="lsp-title">Clima actual</span>
           </div>
           <div className="lsp-body">
@@ -312,7 +319,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
               <>
                 {/* City */}
                 {cityName && (
-                  <div className="weather-city">📍 {cityName}</div>
+                  <div className="weather-city"><MapPin size={14} /> {cityName}</div>
                 )}
 
                 {/* Current */}
@@ -331,12 +338,12 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                 {/* Details */}
                 <div className="weather-details">
                   <div className="weather-detail-item">
-                    <span className="wdi-icon">💧</span>
+                    <span className="wdi-icon"><Droplets size={14} /></span>
                     <span className="wdi-label">Humedad</span>
                     <span className="wdi-value">{weather.current.relative_humidity_2m}%</span>
                   </div>
                   <div className="weather-detail-item">
-                    <span className="wdi-icon">💨</span>
+                    <span className="wdi-icon"><Wind size={14} /></span>
                     <span className="wdi-label">Viento</span>
                     <span className="wdi-value">{Math.round(weather.current.wind_speed_10m)} km/h</span>
                   </div>

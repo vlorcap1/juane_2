@@ -2,6 +2,10 @@
  * Página de Gestión de Contrataciones - Diseño Profesional
  */
 import React, { useState, useEffect } from 'react';
+import {
+  Download, ClipboardList, Clock, CheckCircle, BarChart2, Banknote, Plus,
+  Search, Eye, Check, X, AlertTriangle, User, FileText, Upload,
+} from 'lucide-react';
 import { useContrataciones } from '../hooks/useContrataciones';
 import { useSeremis } from '../hooks/useApi';
 import { LoadingSpinner } from './ui/LoadingSpinner';
@@ -174,7 +178,7 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
         vbQuien: user.nombre,
         vbFecha: new Date().toISOString()
       } as any);
-      showToast(`✅ Visto Bueno otorgado a ${c.nombre}`, 'success');
+      showToast(`Visto Bueno otorgado a ${c.nombre}`, 'success');
       refresh();
     } catch (error) {
       console.error('Error al aprobar:', error);
@@ -215,11 +219,11 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
   const getEstadoBadge = (estado: string) => {
     const normalizedEstado = estado?.toLowerCase();
     if (normalizedEstado === 'pendiente' || normalizedEstado === 'en_proceso') {
-      return <span className="badge badge-warning">⏳ Pendiente VB</span>;
+      return <span className="badge badge-warning"><Clock size={12} /> Pendiente VB</span>;
     } else if (normalizedEstado === 'aprobada' || normalizedEstado === 'adjudicada') {
-      return <span className="badge badge-success">✅ Aprobada</span>;
+      return <span className="badge badge-success"><CheckCircle size={12} /> Aprobada</span>;
     } else if (normalizedEstado === 'rechazada') {
-      return <span className="badge badge-danger">❌ Rechazada</span>;
+      return <span className="badge badge-danger"><X size={12} /> Rechazada</span>;
     }
     return <span className="badge">{estado}</span>;
   };
@@ -237,7 +241,7 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
           </div>
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
-          <button className="btn btn-success" onClick={handleExportExcel} disabled={exporting}>{exporting ? 'Exportando...' : '⬇ Excel'}</button>
+          <button className="btn btn-success" onClick={handleExportExcel} disabled={exporting}>{exporting ? 'Exportando...' : <><Download size={14} /> Excel</>}</button>
           <button className="btn btn-primary" onClick={handleCreate}>+ Nueva Contratación</button>
         </div>
       </div>
@@ -245,21 +249,21 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
       {/* Stats Grid */}
       <div className="stats-grid">
         <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'rgba(58,123,213,.15)' }}>📋</div>
+          <div className="stat-icon" style={{ background: 'rgba(58,123,213,.15)' }}><ClipboardList size={20} /></div>
           <div>
             <div className="stat-val">{stats.total}</div>
             <div className="stat-label">Total solicitudes</div>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'rgba(232,160,58,.15)' }}>⏳</div>
+          <div className="stat-icon" style={{ background: 'rgba(232,160,58,.15)' }}><Clock size={20} /></div>
           <div>
             <div className="stat-val" style={{ color: 'var(--accent)' }}>{stats.pendientes}</div>
             <div className="stat-label">Pendientes de VB</div>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon" style={{ background: 'rgba(46,196,165,.12)' }}>✅</div>
+          <div className="stat-icon" style={{ background: 'rgba(46,196,165,.12)' }}><CheckCircle size={20} /></div>
           <div>
             <div className="stat-val" style={{ color: 'var(--accent3)' }}>{stats.aprobadas}</div>
             <div className="stat-label">Aprobadas</div>
@@ -268,21 +272,21 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
         {isAdmin && (
           <>
             <div className="stat-card">
-              <div className="stat-icon" style={{ background: 'rgba(140,100,255,.15)' }}>📊</div>
+              <div className="stat-icon" style={{ background: 'rgba(140,100,255,.15)' }}><BarChart2 size={20} /></div>
               <div>
                 <div className="stat-val">{stats.historicos}</div>
                 <div className="stat-label">Contratos históricos</div>
               </div>
             </div>
             <div className="stat-card">
-              <div className="stat-icon" style={{ background: 'rgba(46,196,165,.15)' }}>💰</div>
+              <div className="stat-icon" style={{ background: 'rgba(46,196,165,.15)' }}><Banknote size={20} /></div>
               <div>
                 <div className="stat-val" style={{ color: 'var(--accent3)' }}>{formatMoney(stats.montoTotal)}</div>
                 <div className="stat-label">Suma pesos mensuales</div>
               </div>
             </div>
             <div className="stat-card">
-              <div className="stat-icon" style={{ background: 'rgba(58,123,213,.15)' }}>🆕</div>
+              <div className="stat-icon" style={{ background: 'rgba(58,123,213,.15)' }}><Plus size={20} /></div>
               <div>
                 <div className="stat-val" style={{ color: 'var(--accent2)' }}>{formatMoney(stats.montoNuevos)}</div>
                 <div className="stat-label">Suma plazas nuevas</div>
@@ -305,23 +309,23 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
             className={`f-chip pend-chip ${selectedEstado === 'Pendiente' ? 'active' : ''}`}
             onClick={() => setSelectedEstado('Pendiente')}
           >
-            ⏳ Pendiente VB
+            <Clock size={13} /> Pendiente VB
           </div>
-          <div 
+          <div
             className={`f-chip ${selectedEstado === 'Aprobada' ? 'active' : ''}`}
             onClick={() => setSelectedEstado('Aprobada')}
           >
-            ✅ Aprobadas
+            <CheckCircle size={13} /> Aprobadas
           </div>
-          <div 
+          <div
             className={`f-chip ${selectedEstado === 'Rechazada' ? 'active' : ''}`}
             onClick={() => setSelectedEstado('Rechazada')}
           >
-            ❌ Rechazadas
+            <X size={13} /> Rechazadas
           </div>
         </div>
         <div className="search-wrap">
-          <span className="search-icon">🔍</span>
+          <span className="search-icon"><Search size={14} /></span>
           <input
             type="text"
             className="search-input"
@@ -336,7 +340,7 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
       <div className="table-wrap">
         <div className="table-head-bar">
           <div className="table-head-title">
-            📋 Solicitudes de Contratación
+            <ClipboardList size={15} /> Solicitudes de Contratación
             <span className="table-count">{filteredContrataciones.length} registros</span>
           </div>
         </div>
@@ -396,7 +400,7 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
                           style={{ fontSize: '10px', padding: '4px 8px' }}
                           onClick={() => handleVerDetalle(c)}
                         >
-                          👁 Ver
+                          <Eye size={13} /> Ver
                         </button>
                         {isAdmin && (c.estado === 'Pendiente' || c.estado === 'pendiente') && (
                           <>
@@ -405,14 +409,14 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
                               style={{ fontSize: '10px', padding: '4px 8px', fontWeight: 700 }}
                               onClick={() => { setSelectedContratacion(c); handleAprobarDirecto(c); }}
                             >
-                              ✅ VB
+                              <Check size={13} /> VB
                             </button>
-                            <button 
-                              className="btn btn-danger2" 
+                            <button
+                              className="btn btn-danger2"
                               style={{ fontSize: '10px', padding: '4px 8px' }}
                               onClick={() => { setSelectedContratacion(c); setShowRechazoModal(true); }}
                             >
-                              ❌
+                              <X size={13} />
                             </button>
                           </>
                         )}
@@ -451,7 +455,7 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
           )}
 
           <div style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.1em', color: 'var(--accent2)', marginBottom: '8px', paddingBottom: '8px', borderBottom: '1px solid var(--border)' }}>
-            👤 Persona a contratar
+            <User size={13} /> Persona a contratar
           </div>
           
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
@@ -501,7 +505,7 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
           </div>
 
           <div style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.1em', color: 'var(--accent2)', marginBottom: '8px', paddingBottom: '8px', borderBottom: '1px solid var(--border)', marginTop: '8px' }}>
-            📄 Datos del contrato
+            <FileText size={13} /> Datos del contrato
           </div>
 
           <div className="form-group">
@@ -612,7 +616,7 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
           <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', marginTop: '12px' }}>
             <button className="btn" onClick={() => setShowModal(false)}>Cancelar</button>
             <button className="btn btn-primary" onClick={handleSubmit}>
-              {editingContratacion ? 'Actualizar' : '📤 Enviar al Delegado Presidencial'}
+              {editingContratacion ? 'Actualizar' : <><Upload size={14} /> Enviar al Delegado Presidencial</>}
             </button>
           </div>
         </div>
@@ -639,13 +643,13 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
               </div>
               <div style={{ flexShrink: 0 }}>
                 {(selectedContratacion.estado === 'Pendiente' || selectedContratacion.estado === 'pendiente') && (
-                  <span className="badge badge-warning">⏳ Pendiente VB</span>
+                  <span className="badge badge-warning"><Clock size={12} /> Pendiente VB</span>
                 )}
                 {(selectedContratacion.estado === 'Aprobada' || selectedContratacion.estado === 'aprobada') && (
-                  <span className="badge badge-success">✅ Aprobada</span>
+                  <span className="badge badge-success"><CheckCircle size={12} /> Aprobada</span>
                 )}
                 {(selectedContratacion.estado === 'Rechazada' || selectedContratacion.estado === 'rechazada') && (
-                  <span className="badge badge-danger">❌ Rechazada</span>
+                  <span className="badge badge-danger"><X size={12} /> Rechazada</span>
                 )}
               </div>
             </div>
@@ -668,7 +672,7 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
               )}
               <div style={{ background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: '9px', padding: '11px 15px', gridColumn: '1 / -1' }}>
                 <div style={{ fontSize: '9px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--text3)', marginBottom: '3px' }}>Tipo de plaza</div>
-                <div style={{ fontSize: '12px', color: 'var(--text)' }}>{selectedContratacion.esNuevo === 'Nuevo' ? '🆕 Plaza nueva' : '🔄 Cambio de plaza actual'}</div>
+                <div style={{ fontSize: '12px', color: 'var(--text)' }}>{selectedContratacion.esNuevo === 'Nuevo' ? 'Plaza nueva' : 'Cambio de plaza actual'}</div>
               </div>
               <div style={{ background: 'var(--bg3)', border: '1px solid var(--border)', borderRadius: '9px', padding: '11px 15px' }}>
                 <div style={{ fontSize: '9px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--text3)', marginBottom: '3px' }}>Fecha inicio</div>
@@ -704,12 +708,12 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
 
             {/* Flujo de Visto Bueno */}
             <div style={{ background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '12px', padding: '18px 22px' }}>
-              <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text)', marginBottom: '16px' }}>✅ Flujo de Visto Bueno</div>
+              <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text)', marginBottom: '16px' }}><CheckCircle size={14} /> Flujo de Visto Bueno</div>
               
               {/* SEREMI Solicitante */}
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px', padding: '12px 0', borderBottom: '1px solid var(--border)' }}>
                 <div style={{ width: '34px', height: '34px', borderRadius: '50%', border: '2px solid var(--accent3)', background: 'rgba(46,196,165,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', flexShrink: 0 }}>
-                  📤
+                  <Upload size={16} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text)' }}>SEREMI solicitante</div>
@@ -743,9 +747,9 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
                   flexShrink: 0,
                   transition: 'all .3s'
                 }}>
-                  {selectedContratacion.estado === 'Aprobada' || selectedContratacion.estado === 'aprobada' ? '✅' :
-                   selectedContratacion.estado === 'Rechazada' || selectedContratacion.estado === 'rechazada' ? '❌' :
-                   '⏳'}
+                  {selectedContratacion.estado === 'Aprobada' || selectedContratacion.estado === 'aprobada' ? <CheckCircle size={16} /> :
+                   selectedContratacion.estado === 'Rechazada' || selectedContratacion.estado === 'rechazada' ? <X size={16} /> :
+                   <Clock size={16} />}
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text)' }}>Delegado Presidencial</div>
@@ -765,7 +769,7 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
 
             {selectedContratacion.motivoRechazo && (
               <div style={{ background: 'rgba(232, 84, 84, 0.08)', border: '1px solid rgba(232, 84, 84, 0.2)', borderRadius: '10px', padding: '14px' }}>
-                <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--danger)', marginBottom: '8px' }}>❌ Motivo del Rechazo</div>
+                <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--danger)', marginBottom: '8px' }}><X size={13} /> Motivo del Rechazo</div>
                 <div style={{ fontSize: '11px', color: 'var(--text2)', lineHeight: '1.5' }}>
                   {selectedContratacion.motivoRechazo}
                 </div>
@@ -775,14 +779,14 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
             {isAdmin && (selectedContratacion.estado === 'Pendiente' || selectedContratacion.estado === 'pendiente') && (
               <div style={{ background: 'rgba(46, 196, 165, 0.05)', border: '1px solid rgba(46, 196, 165, 0.2)', borderRadius: '11px', padding: '18px 20px', marginTop: '8px' }}>
                 <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--accent3)', marginBottom: '14px' }}>
-                  ⏳ Esta solicitud requiere tu Visto Bueno
+                  <Clock size={14} /> Esta solicitud requiere tu Visto Bueno
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
                   <button 
                     onClick={handleAprobar}
                     style={{ padding: '12px 28px', background: 'var(--accent3)', border: 'none', borderRadius: '10px', color: '#0b0f1a', fontFamily: 'DM Sans, sans-serif', fontSize: '13px', fontWeight: 700, cursor: 'pointer', transition: 'all .2s', letterSpacing: '.01em' }}
                   >
-                    ✅ Dar Visto Bueno — Aprobar contratación
+                    <CheckCircle size={15} /> Dar Visto Bueno — Aprobar contratación
                   </button>
                   <span style={{ fontSize: '11px', color: 'var(--text3)' }}>El estado cambiará a <strong style={{ color: 'var(--accent3)' }}>Aprobada</strong></span>
                 </div>
@@ -791,7 +795,7 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
                     onClick={handleRechazar}
                     style={{ padding: '8px 16px', background: 'transparent', border: '1px solid var(--danger)', borderRadius: '9px', color: 'var(--danger)', fontFamily: 'DM Sans, sans-serif', fontSize: '11px', fontWeight: 600, cursor: 'pointer', transition: 'all .2s' }}
                   >
-                    ❌ Rechazar solicitud
+                    <X size={14} /> Rechazar solicitud
                   </button>
                 </div>
               </div>
@@ -815,7 +819,7 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ background: 'rgba(232, 84, 84, 0.08)', border: '1px solid rgba(232, 84, 84, 0.2)', borderRadius: '10px', padding: '14px', fontSize: '11px', color: 'var(--text2)', lineHeight: '1.5' }}>
-            ⚠️ Esta acción rechazará la solicitud de contratación de <strong>{selectedContratacion?.nombre}</strong>. 
+            <AlertTriangle size={14} /> Esta acción rechazará la solicitud de contratación de <strong>{selectedContratacion?.nombre}</strong>.
             Por favor, indica el motivo del rechazo para que el solicitante pueda comprender la decisión.
           </div>
 
@@ -839,7 +843,7 @@ export const ContratacionesPage: React.FC<ContratacionesPageProps> = ({ user }) 
               onClick={handleConfirmarRechazo}
               style={{ background: 'var(--danger)', color: '#fff', border: 'none' }}
             >
-              ❌ Confirmar Rechazo
+              <X size={14} /> Confirmar Rechazo
             </button>
           </div>
         </div>

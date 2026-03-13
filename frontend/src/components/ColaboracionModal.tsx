@@ -8,6 +8,7 @@ import { EmptyState } from './ui/EmptyState';
 import { useColaboracion } from '../hooks/useColaboracion';
 import { formatRelativeTime } from '../utils/dateUtils';
 import './ColaboracionModal.css';
+import { MessageSquare, Paperclip, FileText, Download, Trash2, History, Upload } from 'lucide-react';
 
 interface ColaboracionModalProps {
   isOpen: boolean;
@@ -81,7 +82,7 @@ export const ColaboracionModal: React.FC<ColaboracionModalProps> = ({
     if (loading) return <LoadingSpinner size="md" />;
 
     if (comentarios.length === 0) {
-      return <EmptyState icon="💬" title="Sin comentarios" message="Sé el primero en comentar" />;
+      return <EmptyState icon={<MessageSquare size={32} />} title="Sin comentarios" message="Sé el primero en comentar" />;
     }
 
     return (
@@ -108,14 +109,14 @@ export const ColaboracionModal: React.FC<ColaboracionModalProps> = ({
     if (loading) return <LoadingSpinner size="md" />;
 
     if (archivos.length === 0) {
-      return <EmptyState icon="📎" title="Sin archivos" message="Arrastra archivos aquí o haz clic para subir" />;
+      return <EmptyState icon={<Paperclip size={32} />} title="Sin archivos" message="Arrastra archivos aquí o haz clic para subir" />;
     }
 
     return (
       <div className="archivos-list">
         {archivos.map((a) => (
           <div key={a.id} className="archivo-item">
-            <div className="archivo-icon">📄</div>
+            <div className="archivo-icon"><FileText size={20} /></div>
             <div className="archivo-info">
               <div className="archivo-nombre">{a.originalName}</div>
               <div className="archivo-meta">
@@ -123,8 +124,8 @@ export const ColaboracionModal: React.FC<ColaboracionModalProps> = ({
               </div>
             </div>
             <div className="archivo-actions">
-              <a href={`/api/archivos/${a.id}/download`} className="btn-icon" title="Descargar">⬇️</a>
-              <button className="btn-icon btn-delete" onClick={() => handleDeleteArchivo(a.id)} title="Eliminar">🗑️</button>
+              <a href={`/api/archivos/${a.id}/download`} className="btn-icon" title="Descargar"><Download size={14} /></a>
+              <button className="btn-icon btn-delete" onClick={() => handleDeleteArchivo(a.id)} title="Eliminar"><Trash2 size={14} /></button>
             </div>
           </div>
         ))}
@@ -134,7 +135,7 @@ export const ColaboracionModal: React.FC<ColaboracionModalProps> = ({
 
   const renderHistorial = () => {
     return (
-      <EmptyState icon="📜" title="Historial de auditoría" message="Funcionalidad próximamente" />
+      <EmptyState icon={<History size={32} />} title="Historial de auditoría" message="Funcionalidad próximamente" />
     );
   };
 
@@ -147,7 +148,7 @@ export const ColaboracionModal: React.FC<ColaboracionModalProps> = ({
             className={`tab-btn ${activeTab === 'comentarios' ? 'active' : ''}`}
             onClick={() => setActiveTab('comentarios')}
           >
-            <span className="tab-icon">💬</span>
+            <MessageSquare size={15} />
             Comentarios
             {comentarios.length > 0 && <span className="tab-count">{comentarios.length}</span>}
           </button>
@@ -155,7 +156,7 @@ export const ColaboracionModal: React.FC<ColaboracionModalProps> = ({
             className={`tab-btn ${activeTab === 'archivos' ? 'active' : ''}`}
             onClick={() => setActiveTab('archivos')}
           >
-            <span className="tab-icon">📎</span>
+            <Paperclip size={15} />
             Archivos
             {archivos.length > 0 && <span className="tab-count">{archivos.length}</span>}
           </button>
@@ -163,7 +164,7 @@ export const ColaboracionModal: React.FC<ColaboracionModalProps> = ({
             className={`tab-btn ${activeTab === 'historial' ? 'active' : ''}`}
             onClick={() => setActiveTab('historial')}
           >
-            <span className="tab-icon">📜</span>
+            <History size={15} />
             Historial
           </button>
         </div>
@@ -215,7 +216,7 @@ export const ColaboracionModal: React.FC<ColaboracionModalProps> = ({
                     </>
                   ) : (
                     <>
-                      <span className="upload-icon">📤</span>
+                      <Upload size={24} />
                       <span>Subir archivo</span>
                     </>
                   )}

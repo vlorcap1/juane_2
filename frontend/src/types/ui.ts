@@ -1,3 +1,5 @@
+import React from 'react';
+
 /**
  * Tipos para componentes UI reutilizables
  */
@@ -77,7 +79,7 @@ export interface FilterChipsProps {
 // EMPTY STATE
 // ============================================
 export interface EmptyStateProps {
-  icon?: string;
+  icon?: React.ReactNode;
   title: string;
   message?: string;
   action?: {

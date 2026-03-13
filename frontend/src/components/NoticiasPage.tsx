@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Newspaper, RefreshCw, Settings, Pencil, Trash2, Check, Clock, AlertTriangle, Inbox } from 'lucide-react';
 import './NoticiasPage.css';
 
 /* ─── Types ─────────────────────────────────────────────── */
@@ -132,11 +133,11 @@ const NoticiasPage: React.FC<NoticiasPageProps> = ({ user }) => {
       });
       if (!res.ok) throw new Error(`Error ${res.status}`);
       const data = await res.json();
-      setSyncMsg(`✓ ${data.nuevas} nuevas noticias agregadas`);
+      setSyncMsg(`${data.nuevas} nuevas noticias agregadas`);
       fetchNoticias(activeEtiqueta);
       fetchEtiquetas();
     } catch (e: any) {
-      setSyncMsg('✗ Error al sincronizar. Revise las URLs de las fuentes.');
+      setSyncMsg('Error al sincronizar. Revise las URLs de las fuentes.');
     } finally {
       setSyncing(false);
     }
@@ -246,12 +247,12 @@ const NoticiasPage: React.FC<NoticiasPageProps> = ({ user }) => {
       {/* ── Header ─────────────────────────────────── */}
       <div className="noticias-header">
         <div>
-          <div className="noticias-title">📰 Noticias RSS</div>
+          <div className="noticias-title"><Newspaper size={18} /> Noticias RSS</div>
           <div className="noticias-subtitle">Alertas automáticas · sincronización diaria 06:00</div>
         </div>
         {isAdmin && (
           <button className="btn btn-primary" onClick={handleSync} disabled={syncing}>
-            {syncing ? '⏳ Sincronizando...' : '🔄 Sincronizar ahora'}
+            {syncing ? <><Clock size={14} /> Sincronizando...</> : <><RefreshCw size={14} /> Sincronizar ahora</>}
           </button>
         )}
       </div>
@@ -272,7 +273,7 @@ const NoticiasPage: React.FC<NoticiasPageProps> = ({ user }) => {
         <div className="fuentes-section">
           <button className="fuentes-toggle" onClick={() => setShowFuentes(v => !v)}>
             <span>{showFuentes ? '▾' : '▸'}</span>
-            <span>⚙️ Gestionar fuentes RSS</span>
+            <span><Settings size={14} /> Gestionar fuentes RSS</span>
             <span style={{ marginLeft: 'auto', fontWeight: 400, color: 'var(--text3)' }}>
               {fuentes.length} fuentes configuradas
             </span>
@@ -332,11 +333,11 @@ const NoticiasPage: React.FC<NoticiasPageProps> = ({ user }) => {
                       <div className="fuente-info">
                         <div className="fuente-etiqueta">{f.etiqueta}</div>
                         <div className={`fuente-url ${isPlaceholderUrl(f.url) ? 'fuente-placeholder' : ''}`}>
-                          {isPlaceholderUrl(f.url) ? '⚠ URL placeholder — reemplazar con URL real de Google Alerts' : f.url}
+                          {isPlaceholderUrl(f.url) ? <><AlertTriangle size={12} /> URL placeholder — reemplazar con URL real de Google Alerts</> : f.url}
                         </div>
                       </div>
                       <button className="btn btn-ghost" style={{ fontSize: '11px', padding: '5px 12px' }} onClick={() => startEdit(f)}>
-                        ✏️ Editar
+                        <Pencil size={12} /> Editar
                       </button>
                       <button
                         className={`btn ${f.activo ? 'btn-success' : 'btn-ghost'}`}
@@ -344,7 +345,7 @@ const NoticiasPage: React.FC<NoticiasPageProps> = ({ user }) => {
                         onClick={() => toggleActivo(f)}
                         title={f.activo ? 'Desactivar' : 'Activar'}
                       >
-                        {f.activo ? '✓ Activa' : 'Inactiva'}
+                        {f.activo ? <><Check size={12} /> Activa</> : 'Inactiva'}
                       </button>
                       <button
                         className="btn btn-danger2"
@@ -352,7 +353,7 @@ const NoticiasPage: React.FC<NoticiasPageProps> = ({ user }) => {
                         onClick={() => deleteFuente(f.id)}
                         title="Eliminar fuente"
                       >
-                        🗑
+                        <Trash2 size={12} />
                       </button>
                     </>
                   )}
@@ -437,17 +438,17 @@ const NoticiasPage: React.FC<NoticiasPageProps> = ({ user }) => {
       {/* ── Lista de noticias ──────────────────────── */}
       {loadingNoticias ? (
         <div className="noticias-empty">
-          <div className="noticias-empty-icon">⏳</div>
+          <div className="noticias-empty-icon"><Clock size={32} /></div>
           Cargando noticias...
         </div>
       ) : noticiaError ? (
         <div className="noticias-empty" style={{ color: 'var(--danger)' }}>
-          <div className="noticias-empty-icon">⚠️</div>
+          <div className="noticias-empty-icon"><AlertTriangle size={32} /></div>
           {noticiaError}
         </div>
       ) : noticias.length === 0 ? (
         <div className="noticias-empty">
-          <div className="noticias-empty-icon">📭</div>
+          <div className="noticias-empty-icon"><Inbox size={32} /></div>
           <div>No hay noticias aún.</div>
           {isAdmin && (
             <div style={{ marginTop: '8px', fontSize: '12px' }}>

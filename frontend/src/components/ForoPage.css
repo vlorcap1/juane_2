@@ -40,6 +40,10 @@
   box-shadow: 0 4px 12px rgba(58, 123, 213, 0.1);
 }
 
+.tema-card-clickable {
+  cursor: pointer;
+}
+
 .tema-header {
   display: flex;
   justify-content: space-between;
@@ -518,6 +522,130 @@
   color: var(--text2);
   cursor: pointer;
   transition: all 0.2s ease;
+}
+
+/* Modal detalle de tema (chat) */
+.foro-chat-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.foro-chat-loading,
+.foro-chat-empty {
+  text-align: center;
+  color: var(--text3);
+  padding: 24px;
+}
+
+.foro-tema-op {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.foro-tema-op-titulo {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.foro-tema-op-cuerpo {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text2);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.foro-tema-op-meta {
+  margin-top: 10px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--text3);
+}
+
+.foro-tema-op-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.foro-sep {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-weight: 700;
+  color: var(--text3);
+}
+
+.foro-post-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.foro-post-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 7px;
+}
+
+.foro-post-autor {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent2);
+}
+
+.foro-post-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.foro-post-fecha {
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.foro-post-texto {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.foro-post-delete {
+  border: none;
+  background: transparent;
+  color: var(--danger);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.foro-chat-footer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.foro-reply-input {
+  min-height: 90px;
+}
+
+.foro-chat-footer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }
 
 .mensaje-action:hover {

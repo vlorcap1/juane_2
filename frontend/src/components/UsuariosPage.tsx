@@ -2,6 +2,7 @@
  * Página de Gestión de Usuarios y SEREMís - Diseño profesional
  */
 import React, { useState, useEffect } from 'react';
+import { Lock, User as UserIcon, Mail, Phone, Pencil, Trash2, Plus } from 'lucide-react';
 import { LoadingSpinner } from './ui/LoadingSpinner';
 import { Modal } from './ui/Modal';
 import { useToast } from './ui/Toast';
@@ -147,7 +148,7 @@ export const UsuariosPage: React.FC<UsuariosPageProps> = ({ user }) => {
   if (!isAdmin) {
     return (
       <div className="container" style={{ padding: '40px', textAlign: 'center' }}>
-        <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔒</div>
+        <div style={{ fontSize: '48px', marginBottom: '16px' }}><Lock size={48} /></div>
         <div style={{ fontSize: '18px', color: 'var(--text)' }}>Acceso restringido</div>
         <div style={{ fontSize: '12px', color: 'var(--text3)', marginTop: '8px' }}>
           Solo administradores pueden gestionar usuarios
@@ -197,9 +198,9 @@ export const UsuariosPage: React.FC<UsuariosPageProps> = ({ user }) => {
                 </div>
               </div>
               <div className="user-card-meta">
-                <div className="user-meta-item">👤 <strong>{u.username}</strong></div>
-                {u.email && <div className="user-meta-item">✉ <strong>{u.email}</strong></div>}
-                {u.tel && <div className="user-meta-item">📞 <strong>{u.tel}</strong></div>}
+                <div className="user-meta-item"><UserIcon size={13} /> <strong>{u.username}</strong></div>
+                {u.email && <div className="user-meta-item"><Mail size={13} /> <strong>{u.email}</strong></div>}
+                {u.tel && <div className="user-meta-item"><Phone size={13} /> <strong>{u.tel}</strong></div>}
               </div>
               <div className="user-card-actions">
                 <button 
@@ -207,7 +208,7 @@ export const UsuariosPage: React.FC<UsuariosPageProps> = ({ user }) => {
                   style={{ flex: 1, fontSize: '11px' }} 
                   onClick={() => handleEdit(u)}
                 >
-                  ✏ Editar
+                  <Pencil size={13} /> Editar
                 </button>
                 {u.id !== 'admin' && (
                   <button 
@@ -215,7 +216,7 @@ export const UsuariosPage: React.FC<UsuariosPageProps> = ({ user }) => {
                     style={{ fontSize: '11px' }} 
                     onClick={() => handleDelete(u.id)}
                   >
-                    🗑 Eliminar
+                    <Trash2 size={13} /> Eliminar
                   </button>
                 )}
               </div>
@@ -225,7 +226,7 @@ export const UsuariosPage: React.FC<UsuariosPageProps> = ({ user }) => {
 
         {/* Add User Card */}
         <div className="add-user-card" onClick={handleCreate}>
-          <div className="add-user-card-icon">➕</div>
+          <div className="add-user-card-icon"><Plus size={24} /></div>
           <div>Agregar usuario</div>
         </div>
       </div>

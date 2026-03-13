@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { MapPin, User, Newspaper, Building2, AlertTriangle, Lightbulb, Calendar, Pencil, Trash2, Mail, Phone } from 'lucide-react';
 import { seremisApi } from '../api/client';
 import { useVisitas } from '../hooks/useVisitas';
 import { useContactos } from '../hooks/useContactos';
@@ -30,13 +31,13 @@ interface SeremiData {
 }
 
 const TABS = [
-  { key: 'visitas', label: 'Visitas', icon: '📍' },
-  { key: 'contactos', label: 'Contactos', icon: '👤' },
-  { key: 'prensa', label: 'Prensa', icon: '📰' },
-  { key: 'proyectos', label: 'Proyectos', icon: '🏗️' },
-  { key: 'nudos', label: 'Nudos', icon: '🚧' },
-  { key: 'temas', label: 'Temas', icon: '💡' },
-  { key: 'agenda', label: 'Agenda', icon: '📅' }
+  { key: 'visitas', label: 'Visitas', icon: <MapPin size={15} /> },
+  { key: 'contactos', label: 'Contactos', icon: <User size={15} /> },
+  { key: 'prensa', label: 'Prensa', icon: <Newspaper size={15} /> },
+  { key: 'proyectos', label: 'Proyectos', icon: <Building2 size={15} /> },
+  { key: 'nudos', label: 'Nudos', icon: <AlertTriangle size={15} /> },
+  { key: 'temas', label: 'Temas', icon: <Lightbulb size={15} /> },
+  { key: 'agenda', label: 'Agenda', icon: <Calendar size={15} /> }
 ];
 
 // Inline Tab Components
@@ -114,7 +115,7 @@ const VisitasTab: React.FC<TabProps> = ({ seremiId }) => {
       </div>
 
       {visitas.length === 0 ? (
-        <EmptyState icon="📍" title="Sin visitas" message="Comienza agregando tu primera visita" />
+        <EmptyState icon={<MapPin size={32} />} title="Sin visitas" message="Comienza agregando tu primera visita" />
       ) : (
         <div className="table-container">
           <table className="data-table">
@@ -142,8 +143,8 @@ const VisitasTab: React.FC<TabProps> = ({ seremiId }) => {
                   <td><span className="cell-badge">{v.personas || 0}</span></td>
                   <td>
                     <div className="cell-actions">
-                      <button className="btn-icon btn-edit" onClick={() => handleEdit(v)}>✏️</button>
-                      <button className="btn-icon btn-delete" onClick={() => handleDelete(v.id)}>🗑️</button>
+                      <button className="btn-icon btn-edit" onClick={() => handleEdit(v)}><Pencil size={13} /></button>
+                      <button className="btn-icon btn-delete" onClick={() => handleDelete(v.id)}><Trash2 size={13} /></button>
                     </div>
                   </td>
                 </tr>
@@ -258,7 +259,7 @@ const ContactosTab: React.FC<TabProps> = ({ seremiId }) => {
       </div>
 
       {contactos.length === 0 ? (
-        <EmptyState icon="👤" title="Sin contactos" message="Comienza agregando tu primer contacto" />
+        <EmptyState icon={<User size={32} />} title="Sin contactos" message="Comienza agregando tu primer contacto" />
       ) : (
         <div className="table-container">
           <table className="data-table">
@@ -286,8 +287,8 @@ const ContactosTab: React.FC<TabProps> = ({ seremiId }) => {
                   <td><span className="cell-comuna">{c.instituciones || '-'}</span></td>
                   <td>
                     <div className="cell-actions">
-                      <button className="btn-icon btn-edit" onClick={() => handleEdit(c)}>✏️</button>
-                      <button className="btn-icon btn-delete" onClick={() => handleDelete(c.id)}>🗑️</button>
+                      <button className="btn-icon btn-edit" onClick={() => handleEdit(c)}><Pencil size={13} /></button>
+                      <button className="btn-icon btn-delete" onClick={() => handleDelete(c.id)}><Trash2 size={13} /></button>
                     </div>
                   </td>
                 </tr>
@@ -412,7 +413,7 @@ const PrensaTab: React.FC<TabProps> = ({ seremiId }) => {
       </div>
 
       {prensa.length === 0 ? (
-        <EmptyState icon="📰" title="Sin registros de prensa" message="Comienza agregando tu primer registro" />
+        <EmptyState icon={<Newspaper size={32} />} title="Sin registros de prensa" message="Comienza agregando tu primer registro" />
       ) : (
         <div className="table-container">
           <table className="data-table">
@@ -442,8 +443,8 @@ const PrensaTab: React.FC<TabProps> = ({ seremiId }) => {
                   <td><span className={`badge badge-${p.tono === 'positivo' ? 'success' : p.tono === 'negativo' ? 'danger' : 'neutral'}`}>{p.tono || 'Neutral'}</span></td>
                   <td>
                     <div className="cell-actions">
-                      <button className="btn-icon btn-edit" onClick={() => handleEdit(p)}>✏️</button>
-                      <button className="btn-icon btn-delete" onClick={() => handleDelete(p.id)}>🗑️</button>
+                      <button className="btn-icon btn-edit" onClick={() => handleEdit(p)}><Pencil size={13} /></button>
+                      <button className="btn-icon btn-delete" onClick={() => handleDelete(p.id)}><Trash2 size={13} /></button>
                     </div>
                   </td>
                 </tr>
@@ -578,7 +579,7 @@ const ProyectosTab: React.FC<TabProps> = ({ seremiId }) => {
       </div>
 
       {proyectos.length === 0 ? (
-        <EmptyState icon="🏗️" title="Sin proyectos" message="Comienza agregando tu primer proyecto" />
+        <EmptyState icon={<Building2 size={32} />} title="Sin proyectos" message="Comienza agregando tu primer proyecto" />
       ) : (
         <div className="table-container">
           <table className="data-table">
@@ -605,8 +606,8 @@ const ProyectosTab: React.FC<TabProps> = ({ seremiId }) => {
                   <td><span className="cell-comuna">{p.comunas || '-'}</span></td>
                   <td>
                     <div className="cell-actions">
-                      <button className="btn-icon btn-edit" onClick={() => handleEdit(p)}>✏️</button>
-                      <button className="btn-icon btn-delete" onClick={() => handleDelete(p.id)}>🗑️</button>
+                      <button className="btn-icon btn-edit" onClick={() => handleEdit(p)}><Pencil size={13} /></button>
+                      <button className="btn-icon btn-delete" onClick={() => handleDelete(p.id)}><Trash2 size={13} /></button>
                     </div>
                   </td>
                 </tr>
@@ -727,7 +728,7 @@ const NudosTab: React.FC<TabProps> = ({ seremiId }) => {
       </div>
 
       {nudos.length === 0 ? (
-        <EmptyState icon="🚧" title="Sin nudos críticos" message="Comienza agregando tu primer nudo" />
+        <EmptyState icon={<AlertTriangle size={32} />} title="Sin nudos críticos" message="Comienza agregando tu primer nudo" />
       ) : (
         <div className="table-container">
           <table className="data-table">
@@ -759,8 +760,8 @@ const NudosTab: React.FC<TabProps> = ({ seremiId }) => {
                   </td>
                   <td>
                     <div className="cell-actions">
-                      <button className="btn-icon btn-edit" onClick={() => handleEdit(n)}>✏️</button>
-                      <button className="btn-icon btn-delete" onClick={() => handleDelete(n.id)}>🗑️</button>
+                      <button className="btn-icon btn-edit" onClick={() => handleEdit(n)}><Pencil size={13} /></button>
+                      <button className="btn-icon btn-delete" onClick={() => handleDelete(n.id)}><Trash2 size={13} /></button>
                     </div>
                   </td>
                 </tr>
@@ -868,7 +869,7 @@ const TemasTab: React.FC<TabProps> = ({ seremiId }) => {
       </div>
 
       {temas.length === 0 ? (
-        <EmptyState icon="💡" title="Sin temas" message="Comienza agregando tu primer tema" />
+        <EmptyState icon={<Lightbulb size={32} />} title="Sin temas" message="Comienza agregando tu primer tema" />
       ) : (
         <div className="table-container">
           <table className="data-table">
@@ -898,8 +899,8 @@ const TemasTab: React.FC<TabProps> = ({ seremiId }) => {
                   </td>
                   <td>
                     <div className="cell-actions">
-                      <button className="btn-icon btn-edit" onClick={() => handleEdit(t)}>✏️</button>
-                      <button className="btn-icon btn-delete" onClick={() => handleDelete(t.id)}>🗑️</button>
+                      <button className="btn-icon btn-edit" onClick={() => handleEdit(t)}><Pencil size={13} /></button>
+                      <button className="btn-icon btn-delete" onClick={() => handleDelete(t.id)}><Trash2 size={13} /></button>
                     </div>
                   </td>
                 </tr>
@@ -948,6 +949,12 @@ const AgendaTab: React.FC<TabProps> = ({ seremiId }) => {
   const [formData, setFormData] = useState<any>({});
   const { showToast } = useToast();
 
+  const getMinAgendaDate = () => {
+    const minDate = new Date();
+    minDate.setDate(minDate.getDate() + 3);
+    return minDate.toISOString().split('T')[0];
+  };
+
   useEffect(() => {
     refresh();
   }, [seremiId]);
@@ -956,7 +963,7 @@ const AgendaTab: React.FC<TabProps> = ({ seremiId }) => {
     setEditingAgenda(null);
     setFormData({
       seremiId,
-      fecha: new Date().toISOString().split('T')[0],
+      fecha: getMinAgendaDate(),
       texto: '',
       cat: '',
       lugar: '',
@@ -989,6 +996,11 @@ const AgendaTab: React.FC<TabProps> = ({ seremiId }) => {
       return;
     }
 
+    if (formData.fecha < getMinAgendaDate()) {
+      showToast(`Solo puedes agendar desde ${getMinAgendaDate()} en adelante`, 'error');
+      return;
+    }
+
     if (editingAgenda) {
       const success = await updateAgendaItem(editingAgenda.id, formData);
       if (success) setShowModal(false);
@@ -1011,7 +1023,7 @@ const AgendaTab: React.FC<TabProps> = ({ seremiId }) => {
       </div>
 
       {agenda.length === 0 ? (
-        <EmptyState icon="📅" title="Sin eventos en agenda" message="Comienza agregando tu primer evento" />
+        <EmptyState icon={<Calendar size={32} />} title="Sin eventos en agenda" message="Comienza agregando tu primer evento" />
       ) : (
         <div className="table-container">
           <table className="data-table">
@@ -1039,8 +1051,8 @@ const AgendaTab: React.FC<TabProps> = ({ seremiId }) => {
                   <td><span className="cell-comuna">{a.lugar || '-'}</span></td>
                   <td>
                     <div className="cell-actions">
-                      <button className="btn-icon btn-edit" onClick={() => handleEdit(a)}>✏️</button>
-                      <button className="btn-icon btn-delete" onClick={() => handleDelete(a.id)}>🗑️</button>
+                      <button className="btn-icon btn-edit" onClick={() => handleEdit(a)}><Pencil size={13} /></button>
+                      <button className="btn-icon btn-delete" onClick={() => handleDelete(a.id)}><Trash2 size={13} /></button>
                     </div>
                   </td>
                 </tr>
@@ -1055,7 +1067,13 @@ const AgendaTab: React.FC<TabProps> = ({ seremiId }) => {
           <div className="form-row">
             <div className="form-group">
               <label className="form-label">Fecha *</label>
-              <input type="date" className="form-input" value={formData.fecha || ''} onChange={(e) => setFormData({ ...formData, fecha: e.target.value })} />
+              <input
+                type="date"
+                className="form-input"
+                min={getMinAgendaDate()}
+                value={formData.fecha || ''}
+                onChange={(e) => setFormData({ ...formData, fecha: e.target.value })}
+              />
             </div>
             <div className="form-group">
               <label className="form-label">Categoría</label>
@@ -1195,15 +1213,15 @@ export const MiSeremi: React.FC<MiSeremiProps> = ({ user }) => {
         </div>
         <div className="seremi-header-right">
           <div className="seremi-contact-item">
-            <span className="contact-icon">👤</span>
+            <span className="contact-icon"><User size={14} /></span>
             <span>{seremiData.seremisNombre}</span>
           </div>
           <div className="seremi-contact-item">
-            <span className="contact-icon">📧</span>
+            <span className="contact-icon"><Mail size={14} /></span>
             <span>{seremiData.seremisEmail}</span>
           </div>
           <div className="seremi-contact-item">
-            <span className="contact-icon">📞</span>
+            <span className="contact-icon"><Phone size={14} /></span>
             <span>{seremiData.seremisTelefono}</span>
           </div>
         </div>

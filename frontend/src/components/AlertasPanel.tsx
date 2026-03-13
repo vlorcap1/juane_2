@@ -1,4 +1,5 @@
 ﻿import { useState } from 'react';
+import { Bell, AlertOctagon, AlertTriangle, Info, Pin, Check, Trash2, CheckCircle } from 'lucide-react';
 import { useAlertas } from '../hooks/useAlertas';
 import './AlertasPanel.css';
 
@@ -12,10 +13,10 @@ export default function AlertasPanel() {
 
   const getNivelIcon = (nivel: string) => {
     switch (nivel) {
-      case 'danger': return '🔴';
-      case 'warning': return '⚠️';
-      case 'info': return 'ℹ️';
-      default: return '📌';
+      case 'danger': return <AlertOctagon size={14} />;
+      case 'warning': return <AlertTriangle size={14} />;
+      case 'info': return <Info size={14} />;
+      default: return <Pin size={14} />;
     }
   };
 
@@ -44,7 +45,7 @@ export default function AlertasPanel() {
     <>
       {/* Botón de alertas */}
       <div className="alertas-btn" onClick={togglePanel} title="Alertas del sistema">
-        🔔
+        <Bell size={18} />
         {count > 0 && (
           <div className="alertas-badge">
             {count > 99 ? '99+' : count}
@@ -57,14 +58,14 @@ export default function AlertasPanel() {
         <div className="alertas-panel">
           <div className="alertas-panel-head">
             <div className="alertas-panel-title">
-              🚨 Alertas del Sistema
+              <AlertOctagon size={15} /> Alertas del Sistema
             </div>
             <div className="alertas-panel-actions">
               <button className="alertas-panel-btn" onClick={marcarTodasLeidas} title="Marcar todas como leídas">
-                ✓
+                <Check size={14} />
               </button>
               <button className="alertas-panel-btn" onClick={limpiarLeidas} title="Limpiar leídas">
-                🗑️
+                <Trash2 size={14} />
               </button>
               <button className="alertas-panel-btn" onClick={togglePanel}>
                 ×
@@ -77,7 +78,7 @@ export default function AlertasPanel() {
               <div className="alertas-empty">Cargando...</div>
             ) : alertas.length === 0 ? (
               <div className="alertas-empty">
-                ✅ No hay alertas pendientes
+                <CheckCircle size={16} /> No hay alertas pendientes
               </div>
             ) : (
               alertas.map((alerta) => (

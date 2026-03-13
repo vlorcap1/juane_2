@@ -3,6 +3,7 @@ import './ExportModal.css';
 import { Modal } from './ui/Modal';
 import { useExport, ExportFormat, ExportType } from '../hooks/useExport';
 import { LoadingSpinner } from './ui/LoadingSpinner';
+import { FileText, BarChart2, Info } from 'lucide-react';
 
 interface ExportModalProps {
   isOpen: boolean;
@@ -80,7 +81,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                     onChange={() => setFormat('pdf')}
                   />
                   <div className="format-card">
-                    <div className="format-icon">📄</div>
+                    <div className="format-icon"><FileText size={28} /></div>
                     <div className="format-name">PDF</div>
                     <div className="format-desc">Documento portable</div>
                   </div>
@@ -95,7 +96,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                     onChange={() => setFormat('excel')}
                   />
                   <div className="format-card">
-                    <div className="format-icon">📊</div>
+                    <div className="format-icon"><BarChart2 size={28} /></div>
                     <div className="format-name">Excel</div>
                     <div className="format-desc">Hoja de cálculo</div>
                   </div>
@@ -136,7 +137,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
             </div>
 
             <div className="export-info">
-              <span className="info-icon">ℹ️</span>
+              <span className="info-icon"><Info size={14} /></span>
               <span>
                 Se exportarán todos los registros 
                 {useDateRange && ' del rango seleccionado'}
