@@ -8,6 +8,7 @@ import { useProyectos } from '../hooks/useProyectos';
 import { useNudos } from '../hooks/useNudos';
 import { useTemas } from '../hooks/useTemas';
 import { useAgenda } from '../hooks/useAgenda';
+import { useNuevoRegistro } from '../context/NuevoRegistroContext';
 import { LoadingSpinner } from './ui/LoadingSpinner';
 import { EmptyState } from './ui/EmptyState';
 import { Modal, ModalButtons } from './ui/Modal';
@@ -56,19 +57,6 @@ const VisitasTab: React.FC<TabProps> = ({ seremiId }) => {
     refresh();
   }, [seremiId]);
 
-  const handleCreate = () => {
-    setEditingVisita(null);
-    setFormData({
-      seremiId,
-      fecha: new Date().toISOString().split('T')[0],
-      comuna: '',
-      lugar: '',
-      descripcion: '',
-      personas: 0
-    });
-    setShowModal(true);
-  };
-
   const handleEdit = (visita: any) => {
     setEditingVisita(visita);
     setFormData({
@@ -111,7 +99,6 @@ const VisitasTab: React.FC<TabProps> = ({ seremiId }) => {
           <div className="tab-title">Visitas a Comunas</div>
           <div className="tab-subtitle">{visitas.length} registro(s)</div>
         </div>
-        <button className="btn btn-primary" onClick={handleCreate}>+ Nueva Visita</button>
       </div>
 
       {visitas.length === 0 ? (
@@ -196,21 +183,6 @@ const ContactosTab: React.FC<TabProps> = ({ seremiId }) => {
     refresh();
   }, [seremiId]);
 
-  const handleCreate = () => {
-    setEditingContacto(null);
-    setFormData({
-      seremiId,
-      nombre: '',
-      fecha: new Date().toISOString().split('T')[0],
-      lugar: '',
-      personas: 0,
-      tipo: '',
-      instituciones: '',
-      descripcion: ''
-    });
-    setShowModal(true);
-  };
-
   const handleEdit = (contacto: any) => {
     setEditingContacto(contacto);
     setFormData({
@@ -255,7 +227,6 @@ const ContactosTab: React.FC<TabProps> = ({ seremiId }) => {
           <div className="tab-title">Contactos</div>
           <div className="tab-subtitle">{contactos.length} registro(s)</div>
         </div>
-        <button className="btn btn-primary" onClick={handleCreate}>+ Nuevo Contacto</button>
       </div>
 
       {contactos.length === 0 ? (
@@ -350,21 +321,6 @@ const PrensaTab: React.FC<TabProps> = ({ seremiId }) => {
     refresh();
   }, [seremiId]);
 
-  const handleCreate = () => {
-    setEditingPrensa(null);
-    setFormData({
-      seremiId,
-      titular: '',
-      medio: '',
-      fecha: new Date().toISOString().split('T')[0],
-      tipoMedio: '',
-      tono: '',
-      url: '',
-      resumen: ''
-    });
-    setShowModal(true);
-  };
-
   const handleEdit = (item: any) => {
     setEditingPrensa(item);
     setFormData({
@@ -409,7 +365,6 @@ const PrensaTab: React.FC<TabProps> = ({ seremiId }) => {
           <div className="tab-title">Prensa</div>
           <div className="tab-subtitle">{prensa.length} registro(s)</div>
         </div>
-        <button className="btn btn-primary" onClick={handleCreate}>+ Nueva Prensa</button>
       </div>
 
       {prensa.length === 0 ? (
@@ -518,20 +473,6 @@ const ProyectosTab: React.FC<TabProps> = ({ seremiId }) => {
     refresh();
   }, [seremiId]);
 
-  const handleCreate = () => {
-    setEditingProyecto(null);
-    setFormData({
-      seremiId,
-      title: '',
-      meta: '',
-      estado: '',
-      presupuesto: '',
-      descripcion: '',
-      comunas: ''
-    });
-    setShowModal(true);
-  };
-
   const handleEdit = (item: any) => {
     setEditingProyecto(item);
     setFormData({
@@ -575,7 +516,6 @@ const ProyectosTab: React.FC<TabProps> = ({ seremiId }) => {
           <div className="tab-title">Proyectos</div>
           <div className="tab-subtitle">{proyectos.length} registro(s)</div>
         </div>
-        <button className="btn btn-primary" onClick={handleCreate}>+ Nuevo Proyecto</button>
       </div>
 
       {proyectos.length === 0 ? (
@@ -671,18 +611,6 @@ const NudosTab: React.FC<TabProps> = ({ seremiId }) => {
     refresh();
   }, [seremiId]);
 
-  const handleCreate = () => {
-    setEditingNudo(null);
-    setFormData({
-      seremiId,
-      title: '',
-      desc: '',
-      urgencia: '',
-      solucion: ''
-    });
-    setShowModal(true);
-  };
-
   const handleEdit = (item: any) => {
     setEditingNudo(item);
     setFormData({
@@ -724,7 +652,6 @@ const NudosTab: React.FC<TabProps> = ({ seremiId }) => {
           <div className="tab-title">Nudos Críticos</div>
           <div className="tab-subtitle">{nudos.length} registro(s)</div>
         </div>
-        <button className="btn btn-primary" onClick={handleCreate}>+ Nuevo Nudo</button>
       </div>
 
       {nudos.length === 0 ? (
@@ -812,18 +739,6 @@ const TemasTab: React.FC<TabProps> = ({ seremiId }) => {
     refresh();
   }, [seremiId]);
 
-  const handleCreate = () => {
-    setEditingTema(null);
-    setFormData({
-      seremiId,
-      tema: '',
-      ambito: '',
-      prioridad: '',
-      descripcion: ''
-    });
-    setShowModal(true);
-  };
-
   const handleEdit = (item: any) => {
     setEditingTema(item);
     setFormData({
@@ -865,7 +780,6 @@ const TemasTab: React.FC<TabProps> = ({ seremiId }) => {
           <div className="tab-title">Temas de Trabajo</div>
           <div className="tab-subtitle">{temas.length} registro(s)</div>
         </div>
-        <button className="btn btn-primary" onClick={handleCreate}>+ Nuevo Tema</button>
       </div>
 
       {temas.length === 0 ? (
@@ -959,19 +873,6 @@ const AgendaTab: React.FC<TabProps> = ({ seremiId }) => {
     refresh();
   }, [seremiId]);
 
-  const handleCreate = () => {
-    setEditingAgenda(null);
-    setFormData({
-      seremiId,
-      fecha: getMinAgendaDate(),
-      texto: '',
-      cat: '',
-      lugar: '',
-      notas: ''
-    });
-    setShowModal(true);
-  };
-
   const handleEdit = (item: any) => {
     setEditingAgenda(item);
     setFormData({
@@ -1019,7 +920,6 @@ const AgendaTab: React.FC<TabProps> = ({ seremiId }) => {
           <div className="tab-title">Agenda</div>
           <div className="tab-subtitle">{agenda.length} evento(s)</div>
         </div>
-        <button className="btn btn-primary" onClick={handleCreate}>+ Nuevo Evento</button>
       </div>
 
       {agenda.length === 0 ? (
@@ -1110,6 +1010,7 @@ export const MiSeremi: React.FC<MiSeremiProps> = ({ user }) => {
   const [activeSubTab, setActiveSubTab] = useState('visitas');
   const [seremiData, setSeremiData] = useState<SeremiData | null>(null);
   const [loading, setLoading] = useState(true);
+  const { openModal } = useNuevoRegistro();
 
   useEffect(() => {
     loadSeremiData();
@@ -1121,10 +1022,13 @@ export const MiSeremi: React.FC<MiSeremiProps> = ({ user }) => {
       // For SEREMI users, load their own data
       // For admin, this should allow selecting a SEREMI (TODO: add selector)
       const seremis = await seremisApi.getAll();
-      
-      // Find the user's SEREMI data
-      const userSeremi = seremis.find((s: any) => 
-        s.sector.toLowerCase() === user.sector?.toLowerCase()
+      const currentSeremiId = user.seremiId || user.sector;
+
+      // Find the user's SEREMI data (prefer id, fallback sector)
+      const userSeremi = seremis.find((s: any) =>
+        String(s.id) === String(currentSeremiId)
+      ) || seremis.find((s: any) =>
+        s.sector?.toLowerCase() === user.sector?.toLowerCase()
       );
       
       if (userSeremi) {
@@ -1133,10 +1037,10 @@ export const MiSeremi: React.FC<MiSeremiProps> = ({ user }) => {
           id: userSeremi.id,
           nombre: userSeremi.nombre,
           sector: userSeremi.sector,
-          region: userSeremi.sector || 'Región no especificada',
-          seremisNombre: userSeremi.seremiName || userSeremi.nombre || 'Sin asignar',
-          seremisEmail: userSeremi.c1 || 'Sin asignar',
-          seremisTelefono: userSeremi.c2 || 'Sin asignar'
+          region: 'Región del Maule',
+          seremisNombre: user.nombre || userSeremi.nombre || 'Sin asignar',
+          seremisEmail: user.email || 'Sin asignar',
+          seremisTelefono: user.tel || 'Sin asignar'
         });
       }
     } catch (error) {
@@ -1173,6 +1077,11 @@ export const MiSeremi: React.FC<MiSeremiProps> = ({ user }) => {
       default:
         return null;
     }
+  };
+
+  const handleNuevoRegistroGlobal = () => {
+    if (!seremiData?.id) return;
+    openModal(undefined, seremiData.id);
   };
 
   if (loading) {
@@ -1225,6 +1134,13 @@ export const MiSeremi: React.FC<MiSeremiProps> = ({ user }) => {
             <span>{seremiData.seremisTelefono}</span>
           </div>
         </div>
+      </div>
+
+      {/* Global action */}
+      <div className="mi-seremi-actions-bar">
+        <button className="btn btn-primary" onClick={handleNuevoRegistroGlobal}>
+          + Nuevo Registro
+        </button>
       </div>
 
       {/* Sub-tabs */}

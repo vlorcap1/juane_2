@@ -26,6 +26,9 @@ interface User {
   nombre: string;
   cargo: string;
   sector: string;
+  seremiId?: string;
+  email?: string;
+  tel?: string;
   token: string;
 }
 

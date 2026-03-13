@@ -134,7 +134,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ user }) => {
   };
 
   const handleNuevoRegistro = () => {
-    openModal();
+    if (user.rol === 'admin') {
+      openModal();
+      return;
+    }
+
+    const userSeremiId = user.seremiId || user.sector;
+    openModal(undefined, userSeremiId);
   };
 
   const selectSeremi = (id: number) => {

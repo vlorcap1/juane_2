@@ -192,6 +192,9 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         nombre: response.nombre,
         cargo: response.cargo,
         sector: response.seremiId,
+        seremiId: response.seremiId,
+        email: response.email,
+        tel: response.tel,
       }));
       onLoginSuccess({
         id: response.id,
@@ -200,6 +203,9 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
         nombre: response.nombre,
         cargo: response.cargo,
         sector: response.seremiId,
+        seremiId: response.seremiId,
+        email: response.email,
+        tel: response.tel,
         token: response.token,
       });
     } catch {

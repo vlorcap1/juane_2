@@ -17,6 +17,33 @@ const RECORD_TYPES = [
 
 interface SeremiSimple { id: string; nombre: string; sector: string; }
 
+const fixMojibake = (text: string = ''): string => {
+  return text
+    .replace(/â€”/g, '—')
+    .replace(/â€“/g, '–')
+    .replace(/Ã¡/g, 'á')
+    .replace(/Ã©/g, 'é')
+    .replace(/Ã­/g, 'í')
+    .replace(/Ã³/g, 'ó')
+    .replace(/Ãº/g, 'ú')
+    .replace(/Ã±/g, 'ñ')
+    .replace(/Ã/g, 'Á');
+};
+
+const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const formatSeremiOption = (seremi: SeremiSimple): string => {
+  const sector = fixMojibake(seremi.sector || '').trim();
+  let nombre = fixMojibake(seremi.nombre || '').trim();
+
+  if (sector) {
+    const suffix = new RegExp(`\\s*[—-]\\s*${escapeRegex(sector)}$`, 'i');
+    nombre = nombre.replace(suffix, '').trim();
+  }
+
+  return sector ? `${nombre} — ${sector}` : nombre;
+};
+
 const INIT_VISITA   = { fecha:'', comuna:'', lugar:'', personas:'', descripcion:'' };
 const INIT_CONTACTO = { nombre:'', fecha:'', lugar:'', personas:'', tipo:'Reunión sectorial', instituciones:'', descripcion:'' };
 const INIT_PRENSA   = { titular:'', medio:'', fecha:'', tipoMedio:'Diario impreso', url:'', resumen:'', tono:'pos' };
@@ -27,6 +54,17 @@ const INIT_AGENDA   = { fecha:'', hora:'', cat:'Inauguración', texto:'', lugar:
 
 export const NuevoRegistroModal: React.FC = () => {
   const { isOpen, recordType, seremiId, closeModal } = useNuevoRegistro();
+  const currentUser = (() => {
+    try {
+      const raw = localStorage.getItem('user');
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  })();
+  const isAdmin = currentUser?.rol === 'admin';
+  const loggedSeremiId: string = currentUser?.seremiId || currentUser?.sector || '';
+
   const [selectedType, setSelectedType] = useState('visita');
   const [selectedSeremi, setSelectedSeremi] = useState('');
   const [seremis, setSeremis] = useState<SeremiSimple[]>([]);
@@ -54,7 +92,8 @@ export const NuevoRegistroModal: React.FC = () => {
   useEffect(() => {
     if (isOpen) {
       setSelectedType(recordType || 'visita');
-      setSelectedSeremi(seremiId || '');
+      const initialSeremi = isAdmin ? (seremiId || '') : loggedSeremiId;
+      setSelectedSeremi(initialSeremi);
       setVisita({ ...INIT_VISITA });
       setContacto({ ...INIT_CONTACTO });
       setPrensa({ ...INIT_PRENSA });
@@ -62,15 +101,21 @@ export const NuevoRegistroModal: React.FC = () => {
       setNudo({ ...INIT_NUDO });
       setTema({ ...INIT_TEMA });
       setAgenda({ ...INIT_AGENDA });
-      loadSeremis();
+      if (isAdmin) {
+        loadSeremis();
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, isAdmin, seremiId, loggedSeremiId, recordType]);
 
   const loadSeremis = async () => {
     try {
       setLoadingSeremis(true);
       const data = await seremisApi.getAll();
-      setSeremis(data);
+      setSeremis(data.map((s: SeremiSimple) => ({
+        ...s,
+        nombre: fixMojibake(s.nombre),
+        sector: fixMojibake(s.sector),
+      })));
     } catch (e) {
       console.error(e);
     } finally {
@@ -81,30 +126,32 @@ export const NuevoRegistroModal: React.FC = () => {
   const handleClose = () => closeModal();
 
   const handleSave = async () => {
-    if (!selectedSeremi) return alert('Selecciona una SEREMI primero.');
+    const effectiveSeremiId = isAdmin ? selectedSeremi : loggedSeremiId;
+    if (!effectiveSeremiId) return alert('No se encontró la SEREMI del usuario logeado.');
+
     setSaving(true);
     try {
       switch (selectedType) {
         case 'visita':
-          await visitasApi.create({ seremiId: selectedSeremi, fecha: visita.fecha||undefined, comuna: visita.comuna||undefined, lugar: visita.lugar||undefined, personas: visita.personas ? Number(visita.personas) : undefined, descripcion: visita.descripcion||undefined });
+          await visitasApi.create({ seremiId: effectiveSeremiId, fecha: visita.fecha||undefined, comuna: visita.comuna||undefined, lugar: visita.lugar||undefined, personas: visita.personas ? Number(visita.personas) : undefined, descripcion: visita.descripcion||undefined });
           break;
         case 'contacto':
-          await contactosApi.create({ seremiId: selectedSeremi, nombre: contacto.nombre||undefined, fecha: contacto.fecha||undefined, lugar: contacto.lugar||undefined, personas: contacto.personas ? Number(contacto.personas) : undefined, tipo: contacto.tipo||undefined, instituciones: contacto.instituciones||undefined, descripcion: contacto.descripcion||undefined });
+          await contactosApi.create({ seremiId: effectiveSeremiId, nombre: contacto.nombre||undefined, fecha: contacto.fecha||undefined, lugar: contacto.lugar||undefined, personas: contacto.personas ? Number(contacto.personas) : undefined, tipo: contacto.tipo||undefined, instituciones: contacto.instituciones||undefined, descripcion: contacto.descripcion||undefined });
           break;
         case 'prensa':
-          await prensaApi.create({ seremiId: selectedSeremi, titular: prensa.titular||undefined, medio: prensa.medio||undefined, fecha: prensa.fecha||undefined, tipoMedio: prensa.tipoMedio||undefined, tono: prensa.tono||undefined, url: prensa.url||undefined, resumen: prensa.resumen||undefined });
+          await prensaApi.create({ seremiId: effectiveSeremiId, titular: prensa.titular||undefined, medio: prensa.medio||undefined, fecha: prensa.fecha||undefined, tipoMedio: prensa.tipoMedio||undefined, tono: prensa.tono||undefined, url: prensa.url||undefined, resumen: prensa.resumen||undefined });
           break;
         case 'proyecto':
-          await proyectosApi.create({ seremiId: selectedSeremi, title: proyecto.title||undefined, meta: proyecto.meta||undefined, estado: proyecto.estado||undefined, presupuesto: proyecto.presupuesto||undefined, descripcion: proyecto.descripcion||undefined, comunas: proyecto.comunas||undefined });
+          await proyectosApi.create({ seremiId: effectiveSeremiId, title: proyecto.title||undefined, meta: proyecto.meta||undefined, estado: proyecto.estado||undefined, presupuesto: proyecto.presupuesto||undefined, descripcion: proyecto.descripcion||undefined, comunas: proyecto.comunas||undefined });
           break;
         case 'nudo':
-          await nudosApi.create({ seremiId: selectedSeremi, title: nudo.title||undefined, urgencia: nudo.urgencia||undefined, desc: nudo.desc||undefined, solucion: nudo.solucion||undefined });
+          await nudosApi.create({ seremiId: effectiveSeremiId, title: nudo.title||undefined, urgencia: nudo.urgencia||undefined, desc: nudo.desc||undefined, solucion: nudo.solucion||undefined });
           break;
         case 'tema':
-          await temasApi.create({ seremiId: selectedSeremi, tema: tema.tema||undefined, ambito: tema.ambito||undefined, prioridad: tema.prioridad||undefined, descripcion: tema.descripcion||undefined });
+          await temasApi.create({ seremiId: effectiveSeremiId, tema: tema.tema||undefined, ambito: tema.ambito||undefined, prioridad: tema.prioridad||undefined, descripcion: tema.descripcion||undefined });
           break;
         case 'agenda':
-          await agendaApi.create({ seremiId: selectedSeremi, fecha: agenda.fecha||undefined, hora: agenda.hora||undefined, cat: agenda.cat||undefined, texto: agenda.texto||undefined, lugar: agenda.lugar||undefined, notas: agenda.notas||undefined, minuta: agenda.minuta||undefined });
+          await agendaApi.create({ seremiId: effectiveSeremiId, fecha: agenda.fecha||undefined, hora: agenda.hora||undefined, cat: agenda.cat||undefined, texto: agenda.texto||undefined, lugar: agenda.lugar||undefined, notas: agenda.notas||undefined, minuta: agenda.minuta||undefined });
           break;
       }
       handleClose();
@@ -127,20 +174,24 @@ export const NuevoRegistroModal: React.FC = () => {
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="Nuevo Registro" size="lg" footer={footer}>
       {/* SEREMI selector */}
-      <div className="nr-section-label">SEREMI (ADMIN)</div>
-      <div className="form-group" style={{ marginBottom: 20 }}>
-        <select
-          className="form-select"
-          value={selectedSeremi}
-          onChange={e => setSelectedSeremi(e.target.value)}
-          disabled={loadingSeremis}
-        >
-          <option value="">Seleccionar SEREMI...</option>
-          {seremis.map(s => (
-            <option key={s.id} value={s.id}>{s.nombre} â€” {s.sector}</option>
-          ))}
-        </select>
-      </div>
+      {isAdmin ? (
+        <>
+          <div className="nr-section-label">SEREMI (ADMIN)</div>
+          <div className="form-group" style={{ marginBottom: 20 }}>
+            <select
+              className="form-select"
+              value={selectedSeremi}
+              onChange={e => setSelectedSeremi(e.target.value)}
+              disabled={loadingSeremis}
+            >
+              <option value="">Seleccionar SEREMI...</option>
+              {seremis.map(s => (
+                <option key={s.id} value={s.id}>{formatSeremiOption(s)}</option>
+              ))}
+            </select>
+          </div>
+        </>
+      ) : null}
 
       {/* Tipo de registro */}
       <div className="nr-section-label">TIPO DE REGISTRO</div>
@@ -176,7 +227,7 @@ export const NuevoRegistroModal: React.FC = () => {
         <>
           <div className="nr-info-box">Registra un evento o actividad donde participaron personas. Se acumula el total de asistentes.</div>
           <div className="nr-form-row">
-            <div className="form-group"><label className="form-label">NOMBRE DEL EVENTO</label><input type="text" className="form-input" placeholder="Ej: ReuniÃ³n Mesa TÃ©cnica, Taller..." value={contacto.nombre} onChange={e => setC('nombre', e.target.value)} /></div>
+            <div className="form-group"><label className="form-label">NOMBRE DEL EVENTO</label><input type="text" className="form-input" placeholder="Ej: Reunión Mesa Técnica, Taller..." value={contacto.nombre} onChange={e => setC('nombre', e.target.value)} /></div>
             <div className="form-group"><label className="form-label">FECHA</label><input type="date" className="form-input" value={contacto.fecha} onChange={e => setC('fecha', e.target.value)} /></div>
           </div>
           <div className="nr-form-row">
@@ -186,7 +237,7 @@ export const NuevoRegistroModal: React.FC = () => {
           <div className="nr-form-row">
             <div className="form-group"><label className="form-label">TIPO DE EVENTO</label>
               <select className="form-select" value={contacto.tipo} onChange={e => setC('tipo', e.target.value)}>
-                {['ReuniÃ³n sectorial','Taller / CapacitaciÃ³n','Actividad comunitaria','Acto oficial','Mesa tÃ©cnica','Visita terreno','Otro'].map(o => <option key={o}>{o}</option>)}
+                {['Reunión sectorial','Taller / Capacitación','Actividad comunitaria','Acto oficial','Mesa técnica','Visita terreno','Otro'].map(o => <option key={o}>{o}</option>)}
               </select>
             </div>
             <div className="form-group"><label className="form-label">INSTITUCIONES PARTICIPANTES</label><input type="text" className="form-input" placeholder="Ej: Municipio, GORE, ONGs..." value={contacto.instituciones} onChange={e => setC('instituciones', e.target.value)} /></div>
@@ -205,7 +256,7 @@ export const NuevoRegistroModal: React.FC = () => {
             <div className="form-group"><label className="form-label">FECHA DE PUBLICACIÓN</label><input type="date" className="form-input" value={prensa.fecha} onChange={e => setP('fecha', e.target.value)} /></div>
             <div className="form-group"><label className="form-label">TIPO DE MEDIO</label>
               <select className="form-select" value={prensa.tipoMedio} onChange={e => setP('tipoMedio', e.target.value)}>
-                {['Diario impreso','Portal digital','Radio','TelevisiÃ³n','Redes sociales'].map(o => <option key={o}>{o}</option>)}
+                {['Diario impreso','Portal digital','Radio','Televisión','Redes sociales'].map(o => <option key={o}>{o}</option>)}
               </select>
             </div>
           </div>
@@ -218,7 +269,7 @@ export const NuevoRegistroModal: React.FC = () => {
             </div>
           </div>
           <div className="form-group"><label className="form-label">ENLACE (OPCIONAL)</label><input type="text" className="form-input" placeholder="https://..." value={prensa.url} onChange={e => setP('url', e.target.value)} /></div>
-          <div className="form-group"><label className="form-label">RESUMEN</label><textarea className="form-textarea" placeholder="Breve descripciÃ³n de la nota..." value={prensa.resumen} onChange={e => setP('resumen', e.target.value)} /></div>
+          <div className="form-group"><label className="form-label">RESUMEN</label><textarea className="form-textarea" placeholder="Breve descripción de la nota..." value={prensa.resumen} onChange={e => setP('resumen', e.target.value)} /></div>
         </>
       )}
 
@@ -231,7 +282,7 @@ export const NuevoRegistroModal: React.FC = () => {
           <div className="nr-form-row">
             <div className="form-group"><label className="form-label">ESTADO</label>
               <select className="form-select" value={proyecto.estado} onChange={e => setPr('estado', e.target.value)}>
-                {['Activo','En ejecuciÃ³n','LicitaciÃ³n','DiseÃ±o','FormulaciÃ³n','ConstrucciÃ³n','Finalizado'].map(o => <option key={o}>{o}</option>)}
+                {['Activo','En ejecución','Licitación','Diseño','Formulación','Construcción','Finalizado'].map(o => <option key={o}>{o}</option>)}
               </select>
             </div>
             <div className="form-group"><label className="form-label">PRESUPUESTO ESTIMADO</label><input type="text" className="form-input" placeholder="Ej: $250.000.000" value={proyecto.presupuesto} onChange={e => setPr('presupuesto', e.target.value)} /></div>
