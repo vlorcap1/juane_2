@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import ReactDOM from 'react-dom';
 import { ModalProps } from '../../types/ui';
 import './Modal.css';
 
@@ -42,7 +43,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   if (!isOpen) return null;
 
-  return (
+  return ReactDOM.createPortal(
     <div className="modal-overlay" onClick={handleBackdropClick}>
       <div ref={modalRef} className={`modal-container modal-${size}`}>
         <div className="modal-header">
@@ -66,7 +67,8 @@ export const Modal: React.FC<ModalProps> = ({
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

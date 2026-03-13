@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ThemeProvider } from './context/ThemeContext';
 import { Login } from './components/Login';
 import Header from './components/Header';
 import { TabNavigation } from './components/TabNavigation';
@@ -75,17 +76,23 @@ const App: React.FC = () => {
   }
 
   if (!isLoggedIn || !user) {
-    return <Login onLoginSuccess={handleLoginSuccess} />;
+    return (
+      <ThemeProvider>
+        <Login onLoginSuccess={handleLoginSuccess} />
+      </ThemeProvider>
+    );
   }
 
   return (
-    <ToastProvider>
-      <FilterProvider>
-        <NuevoRegistroProvider>
-          <AppContent user={user} onLogout={handleLogout} />
-        </NuevoRegistroProvider>
-      </FilterProvider>
-    </ToastProvider>
+    <ThemeProvider>
+      <ToastProvider>
+        <FilterProvider>
+          <NuevoRegistroProvider>
+            <AppContent user={user} onLogout={handleLogout} />
+          </NuevoRegistroProvider>
+        </FilterProvider>
+      </ToastProvider>
+    </ThemeProvider>
   );
 };
 

@@ -394,7 +394,7 @@ class VisitaAutoridadBase(BaseModel):
     comunas: Optional[str] = None
     agenda: Optional[str] = None
     acompanantes: Optional[str] = None
-    seremiId: str
+    seremiId: Optional[str] = None
     objetivos: Optional[str] = None
     resultados: Optional[str] = None
     impactoMedios: Optional[str] = None

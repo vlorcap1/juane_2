@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { notificacionesApi } from '../api/client';
 import { Notificacion } from '../types';
 import AlertasPanel from './AlertasPanel';
+import { useTheme } from '../context/ThemeContext';
 
 interface HeaderProps {
   user: any;
@@ -10,6 +11,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ user, currentPeriod, onLogout }) => {
+  const { theme, toggleTheme } = useTheme();
   const [notifPanelOpen, setNotifPanelOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notificacion[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -72,6 +74,13 @@ const Header: React.FC<HeaderProps> = ({ user, currentPeriod, onLogout }) => {
       </div>
       <div className="header-right">
         <div className="period-badge">{currentPeriod}</div>
+        <button
+          className="theme-toggle-btn"
+          onClick={toggleTheme}
+          title={theme === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro'}
+        >
+          {theme === 'dark' ? '☀️' : '🌙'}
+        </button>
         
         {/* Alertas del sistema - Rojo/Naranja */}
         <div style={{ position: 'relative' }}>

@@ -14,6 +14,7 @@ from app.api.routes import (
     archivos, comentarios, kpis, visitas_autoridades, alertas, export
 )
 from app.api.routes.noticias import router as noticias_router, fuentes_router
+from app.api.routes.public_rss import router as public_rss_router
 import os
 import logging
 
@@ -85,6 +86,7 @@ app.include_router(alertas.router)
 app.include_router(export.router)
 app.include_router(noticias_router)
 app.include_router(fuentes_router)
+app.include_router(public_rss_router)
 
 
 @app.get("/")

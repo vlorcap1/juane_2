@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import apiClient from '../api/client';
+import { Modal } from './ui/Modal';
 import './ForoPage.css';
 
 interface ForoTema {
@@ -159,49 +160,43 @@ export const ForoPage: React.FC<ForoPageProps> = ({ user }) => {
       </div>
 
       {/* Modal Nuevo Tema */}
-      {showModal && (
-        <>
-          <div className="modal-overlay" onClick={() => setShowModal(false)} />
-          <div className="modal-dialog nuevo-tema-modal">
-            <div className="modal-header">
-              <div className="modal-title">💬 Nuevo Tema</div>
-              <button className="modal-close" onClick={() => setShowModal(false)}>×</button>
-            </div>
-            <div className="modal-body">
-              <div className="form-group">
-                <label className="form-label">TÍTULO</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="Título del tema..."
-                  value={nuevoTema.titulo}
-                  onChange={(e) => setNuevoTema({ ...nuevoTema, titulo: e.target.value })}
-                  autoFocus
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">MENSAJE (USA @ PARA MENCIONAR USUARIOS)</label>
-                <textarea
-                  className="form-textarea"
-                  placeholder="Escribe tu mensaje... usa @nombre para mencionar"
-                  value={nuevoTema.cuerpo}
-                  onChange={(e) => setNuevoTema({ ...nuevoTema, cuerpo: e.target.value })}
-                  rows={6}
-                  style={{ minHeight: '120px' }}
-                />
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                Cancelar
-              </button>
-              <button className="btn btn-primary" onClick={handleCreateTema}>
-                Publicar
-              </button>
-            </div>
+      <Modal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        title="💬 Nuevo Tema"
+        size="md"
+        footer={
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+            <button className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancelar</button>
+            <button className="btn btn-primary" onClick={handleCreateTema}>Publicar</button>
           </div>
-        </>
-      )}
+        }
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div className="form-group">
+            <label className="form-label">Título</label>
+            <input
+              type="text"
+              className="form-input"
+              placeholder="Título del tema..."
+              value={nuevoTema.titulo}
+              onChange={(e) => setNuevoTema({ ...nuevoTema, titulo: e.target.value })}
+              autoFocus
+            />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Mensaje (usa @ para mencionar usuarios)</label>
+            <textarea
+              className="form-textarea"
+              placeholder="Escribe tu mensaje... usa @nombre para mencionar"
+              value={nuevoTema.cuerpo}
+              onChange={(e) => setNuevoTema({ ...nuevoTema, cuerpo: e.target.value })}
+              rows={6}
+              style={{ minHeight: '140px' }}
+            />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

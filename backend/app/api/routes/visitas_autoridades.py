@@ -1,8 +1,10 @@
 """API routes for Visitas de Autoridades (Ministros, Subsecretarios, Directores)"""
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import datetime
+from pathlib import Path
+import uuid
 
 from app.core.database import get_db
 from app.api.dependencies import get_current_user
@@ -10,7 +12,9 @@ from app.models.user import User
 from app.models.visita_autoridad import VisitaAutoridad
 from app.models.seremi import Seremi
 from app.models.audit import AuditLog
+from app.models.archivo import Archivo
 from app.schemas.records import VisitaAutoridadCreate, VisitaAutoridadUpdate, VisitaAutoridadResponse
+from app.core.config import settings
 
 
 router = APIRouter(prefix="/api/visitas-autoridades", tags=["visitas_autoridades"])
@@ -300,3 +304,120 @@ def delete_visita_autoridad(
     db.commit()
     
     return None
+
+
+@router.post("/{visita_id}/archivos", status_code=status.HTTP_201_CREATED)
+async def upload_archivos_visita(
+    visita_id: int,
+    archivos: List[UploadFile] = File(...),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Subir múltiples archivos para una visita de autoridad"""
+    # Verificar que la visita existe
+    visita = db.query(VisitaAutoridad).filter(VisitaAutoridad.id == visita_id).first()
+    if not visita:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Visita de autoridad no encontrada"
+        )
+    
+    # Verificar permisos
+    if current_user.rol != "admin" and visita.seremiId != current_user.seremiId:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="No tienes permiso para subir archivos a esta visita"
+        )
+    
+    # Crear carpeta uploads si no existe
+    uploads_dir = Path(__file__).parent.parent.parent.parent / "uploads"
+    uploads_dir.mkdir(exist_ok=True)
+    
+    archivos_guardados = []
+    max_file_size = getattr(settings, 'MAX_FILE_SIZE', 20 * 1024 * 1024)  # 20MB default
+    
+    for file in archivos:
+        # Validar tamaño
+        file.file.seek(0, 2)
+        file_size = file.file.tell()
+        file.file.seek(0)
+        
+        if file_size > max_file_size:
+            raise HTTPException(
+                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                detail=f"Archivo {file.filename} demasiado grande. Máximo {max_file_size / (1024*1024)}MB"
+            )
+        
+        # Generar nombre único
+        file_extension = Path(file.filename).suffix
+        unique_filename = f"{uuid.uuid4()}{file_extension}"
+        file_path = uploads_dir / unique_filename
+        
+        # Guardar archivo
+        try:
+            with open(file_path, "wb") as f:
+                content = await file.read()
+                f.write(content)
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Error al guardar archivo {file.filename}: {str(e)}"
+            )
+        
+        # Crear registro en BD
+        db_archivo = Archivo(
+            seremiId=visita.seremiId,
+            tabla="visitas_autoridades",
+            registroId=visita_id,
+            nombre=file.filename,
+            nombreDisco=unique_filename,
+            ruta=str(file_path),
+            tipo=file.content_type,
+            tamano=file_size,
+            subidoPor=current_user.username,
+            subidoEn=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        )
+        db.add(db_archivo)
+        archivos_guardados.append({
+            "nombre": file.filename,
+            "tamano": file_size
+        })
+    
+    db.commit()
+    
+    return {
+        "message": f"{len(archivos_guardados)} archivo(s) subido(s) exitosamente",
+        "archivos": archivos_guardados
+    }
+
+
+@router.get("/{visita_id}/archivos")
+def get_archivos_visita(
+    visita_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Obtener archivos adjuntos de una visita de autoridad"""
+    visita = db.query(VisitaAutoridad).filter(VisitaAutoridad.id == visita_id).first()
+    if not visita:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Visita no encontrada")
+
+    if current_user.rol != "admin" and visita.seremiId != current_user.seremiId:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Sin permiso")
+
+    archivos = db.query(Archivo).filter(
+        Archivo.tabla == "visitas_autoridades",
+        Archivo.registroId == visita_id
+    ).all()
+
+    return [
+        {
+            "id": a.id,
+            "nombre": a.nombre,
+            "tipo": a.tipo,
+            "tamano": a.tamano,
+            "subidoPor": a.subidoPor,
+            "subidoEn": a.subidoEn,
+        }
+        for a in archivos
+    ]
